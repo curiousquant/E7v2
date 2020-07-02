@@ -24,11 +24,16 @@ public class gui extends JPanel implements ActionListener {
     private JLabel patk,pdef,php,pcrit,pcritdmg,speed,eff,effres,set,pk;
     Bag b;
     Map<String,JTextField> items,sumItems;
+    Map<String,Double> history;
     final JButton setButton,spdButton,resetButton,wyvernButton,bellaButton,hpButton,critButton,xlsxButton;
     protected ExportXLSX xlsx;
+    int cnt;
     
     public gui(){
         super(new GridBagLayout());
+        cnt=0;
+        history = new HashMap<>();
+
         b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v2\\EpicSeven\\res\\bag.txt");
         addLabels();
         addTextStuff();
@@ -117,7 +122,7 @@ public class gui extends JPanel implements ActionListener {
         GridBagConstraints c = new GridBagConstraints();
         List<String> rows = new ArrayList<String>();
         Collections.addAll(rows,"weapon","head","chest","neck","ring","boot");
-        List<String> columns = new ArrayList<String>();
+        List<String> columns = new ArrayList<String>();                                
         Collections.addAll(columns,"patk","pdef","php","pcrit","pcritdmg","speed","eff","effres","set");
 
         double[] sum = new double[columns.size()];
@@ -135,10 +140,15 @@ public class gui extends JPanel implements ActionListener {
                 c.fill=GridBagConstraints.BOTH;
                 add(sumItems.get(columns.get(j)),c);
             }
-            
+            history.put(columns.get(j)+cnt,sum[j]);
+            //System.out.println(history.get(columns.get(j)+cnt));
+
             sumItems.get(columns.get(j)).setText(String.valueOf(sum[j]));
             
         }
+        System.out.println("!");
+            
+        cnt++;
     }
 
     public void actionPerformed(ActionEvent evt) {
@@ -571,10 +581,13 @@ public class gui extends JPanel implements ActionListener {
             for(int j=0;j<columns.size()-2;j++){
                 sumItems.get(columns.get(j)).setText(" ");
             }
+//            cnt=0;
+            setCnt(0);
+            history.clear();
         }
 
         else if("XLSX".equals(evt.getActionCommand())){ 
-            xlsx = new ExportXLSX(getBag().getSets());
+            xlsx = new ExportXLSX(getBag().getSets(),getHistory());
             xlsx.loadData();
         }
     }
@@ -709,6 +722,15 @@ public class gui extends JPanel implements ActionListener {
     public Bag getBag(){
         return this.b;
     }
+
+    public Map<String,Double> getHistory(){
+        return this.history;
+    }
+
+    public void setCnt(int c){
+        this.cnt=c;
+    }
+
     public static void main(String[] args) {
         //Schedule a job for the event dispatch thread:
         //creating and showing this application's GUI.

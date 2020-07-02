@@ -268,8 +268,13 @@ public class Bag {
         
 
         double maxatk = 0;
+        double maxhp = 0;
         double atk = 0;
         double crit = 0;
+        double eff = 0;
+        double spd = 0;
+        double hp = 0;
+        double def = 0;
         for (int i=0;i<wcnt;i++){
             for (int j=0;j<rcnt;j++){
                 for (int k=0; k<ncnt;k++){
@@ -297,6 +302,67 @@ public class Bag {
                                 int desE5 = (ch.get(m).getSet().equals("des")) ? 1:0;
                                 int desE6 = (b.get(n1).getSet().equals("des")) ? 1:0;
                                 
+                                int effE1 = (w.get(i).getSet().equals("eff")) ? 1:0;
+                                int effE2 = (r.get(j).getSet().equals("eff")) ? 1:0;
+                                int effE3 = (n.get(k).getSet().equals("eff")) ? 1:0;
+                                int effE4 = (h.get(l).getSet().equals("eff")) ? 1:0;
+                                int effE5 = (ch.get(m).getSet().equals("eff")) ? 1:0;
+                                int effE6 = (b.get(n1).getSet().equals("eff")) ? 1:0;
+                                
+                                int hpE1 = (w.get(i).getSet().equals("hp")) ? 1:0;
+                                int hpE2 = (r.get(j).getSet().equals("hp")) ? 1:0;
+                                int hpE3 = (n.get(k).getSet().equals("hp")) ? 1:0;
+                                int hpE4 = (h.get(l).getSet().equals("hp")) ? 1:0;
+                                int hpE5 = (ch.get(m).getSet().equals("hp")) ? 1:0;
+                                int hpE6 = (b.get(n1).getSet().equals("hp")) ? 1:0;
+                            
+                                int defE1 = (w.get(i).getSet().equals("def")) ? 1:0;
+                                int defE2 = (r.get(j).getSet().equals("def")) ? 1:0;
+                                int defE3 = (n.get(k).getSet().equals("def")) ? 1:0;
+                                int defE4 = (h.get(l).getSet().equals("def")) ? 1:0;
+                                int defE5 = (ch.get(m).getSet().equals("def")) ? 1:0;
+                                int defE6 = (b.get(n1).getSet().equals("def")) ? 1:0;
+                                
+                                int spdE1 = (w.get(i).getSet().equals("spd")) ? 1:0;
+                                int spdE2 = (r.get(j).getSet().equals("spd")) ? 1:0;
+                                int spdE3 = (n.get(k).getSet().equals("spd")) ? 1:0;
+                                int spdE4 = (h.get(l).getSet().equals("spd")) ? 1:0;
+                                int spdE5 = (ch.get(m).getSet().equals("spd")) ? 1:0;
+                                int spdE6 = (b.get(n1).getSet().equals("spd")) ? 1:0;
+                                
+                                def = (w.get(i).getP_def())
+                                        + (r.get(j).getP_def())
+                                            + (n.get(k).getP_def())
+                                                + (h.get(l).getP_def())
+                                                    + (ch.get(m).getP_def())
+                                                        +  (b.get(n1).getP_def())
+                                                ;
+
+                            if(defE1+defE2+defE3+defE4+defE5+defE6==2){
+                                def+=15;
+                            }
+                            else if(defE1+defE2+defE3+defE4+defE5+defE6==4){
+                                def+=30;
+                            }
+                            else if(defE1+defE2+defE3+defE4+defE5+defE6==6){
+                                def+=45;
+                            }                     
+                                hp = (w.get(i).getP_hp())
+                                        + (r.get(j).getP_hp())
+                                            + (n.get(k).getP_hp())
+                                                + (h.get(l).getP_hp())
+                                                    + (ch.get(m).getP_hp())
+                                                        +  (b.get(n1).getP_hp())
+                                                ;
+                                if(hpE1+hpE2+hpE3+hpE4+hpE5+hpE6==2){
+                                    hp+=15;
+                                }
+                                else if(hpE1+hpE2+hpE3+hpE4+hpE5+hpE6==4){
+                                    hp+=30;
+                                }
+                                else if(hpE1+hpE2+hpE3+hpE4+hpE5+hpE6==6){
+                                    hp+=45;
+                                }                                
                                 if(critE1+critE2+critE3+critE4+critE5+critE6==2){
                                     crit = 12+(w.get(i).getC())
                                             + (r.get(j).getC())
@@ -366,10 +432,50 @@ public class Bag {
                                                     ;
                                 }
 
-                                if (maxatk<atk && crit>=90){
-                                    System.out.println(crit);
+                                if(spdE1+spdE2+spdE3+spdE4+spdE5+spdE6>=4){
+                                    //System.out.println(spdE1+spdE2+spdE3+spdE4+spdE5+spdE6);
+                                    //atk = 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                    spd = 1.25*(w.get(i).getSpd()
+                                            + r.get(j).getSpd()
+                                                + n.get(k).getSpd()
+                                                    + h.get(l).getSpd()
+                                                        + ch.get(m).getSpd()
+                                                            +  b.get(n1).getSpd())
+                                                    ;
+                                }
+                                //broken set
+                                else{
+                                    spd = w.get(i).getSpd()
+                                            + r.get(j).getSpd()
+                                                + n.get(k).getSpd()
+                                                    + h.get(l).getSpd()
+                                                        + ch.get(m).getSpd()
+                                                            +  b.get(n1).getSpd()
+                                                    ;
+                                }
+
+                                eff = (w.get(i).getEff())
+                                        + (r.get(j).getEff())
+                                            + (n.get(k).getEff())
+                                                + (h.get(l).getEff())
+                                                    + (ch.get(m).getEff())
+                                                        +  (b.get(n1).getEff());
+
+                                if(effE1+effE2+effE3+effE4+effE5+effE6==2){
+                                    eff+=20;
+                                    }
+                                else if (effE1+effE2+effE3+effE4+effE5+effE6==2){
+                                    eff+=40;
+                                }    
+                                else if (effE1+effE2+effE3+effE4+effE5+effE6==6){
+                                    eff+=60;
+                                }
+
+                                if (maxatk<atk && hp>80 && def >40  && crit>=80 && eff>=20 ){
+                                    //System.out.println(crit);
                                     maxatk = atk;
-                                    
+                                    maxhp = hp;
+
                                     maxW = w.get(i);
                                     maxR = r.get(j);
                                     maxN = n.get(k);
