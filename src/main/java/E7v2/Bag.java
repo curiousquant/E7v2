@@ -256,9 +256,12 @@ public class Bag {
         getSets().add(s);
         return s;
     }
-
-    public Sets superCritCalcs(ArrayList<Equipment> w,ArrayList<Equipment> h, ArrayList<Equipment> ch, 
-                                ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b){
+    //Double.parseDouble(customAtkTxt.getText()),Double.parseDouble(customHpTxt.getText()),
+    //Double.parseDouble(customCritTxt.getText()),Double.parseDouble(customSpeedTxt.getText()),
+    //    Double.parseDouble(customDefTxt.getText()))
+    public Sets superCustomCalcs(ArrayList<Equipment> w,ArrayList<Equipment> h, ArrayList<Equipment> ch, 
+                                ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b,
+                                    Double catk, Double chp, Double cCrit, Double cSpeed, Double cDef, Double cEff, Double cCd){
         Equipment maxW = w.get(0);
         Equipment maxR = r.get(0);
         Equipment maxN = n.get(0);
@@ -275,6 +278,7 @@ public class Bag {
         double spd = 0;
         double hp = 0;
         double def = 0;
+        double dest = 0;
         for (int i=0;i<wcnt;i++){
             for (int j=0;j<rcnt;j++){
                 for (int k=0; k<ncnt;k++){
@@ -403,32 +407,43 @@ public class Bag {
                                 //atk set
                                 if(atkE1+atkE2+atkE3+atkE4+atkE5+atkE6>=4){
                                     //atk = 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
-                                    atk = 1.35*((1+w.get(i).getP_atk())*(1+w.get(i).getCd())*(w.get(i).getC())
-                                            + (1+r.get(j).getP_atk())*(1+r.get(j).getCd())*(r.get(j).getC())
-                                                + (1+n.get(k).getP_atk())*(1+n.get(k).getCd())*(n.get(k).getC())
-                                                    + (1+h.get(l).getP_atk())*(1+h.get(l).getCd())*(h.get(l).getC())
-                                                        + (1+ch.get(m).getP_atk())*(1+ch.get(m).getCd())*(ch.get(m).getC())
-                                                            +  (1+b.get(n1).getP_atk())*(1+b.get(n1).getCd())*(b.get(n1).getC()))
-                                                    ;
-                                }
-                                //dest set
-                                else if (desE1+desE2+desE3+desE4+desE5+desE6>=4){
-                                    atk = (1+w.get(i).getP_atk())*(1+w.get(i).getCd()+.4+1.5)*(w.get(i).getC())
-                                            + (1+r.get(j).getP_atk())*(1+r.get(j).getCd()+.4+1.5)*(r.get(j).getC())
-                                                + (1+n.get(k).getP_atk())*(1+n.get(k).getCd()+.4+1.5)*(n.get(k).getC())
-                                                    + (1+h.get(l).getP_atk())*(1+h.get(l).getCd()+.4+1.5)*(h.get(l).getC())
-                                                        + (1+ch.get(m).getP_atk())*(1+ch.get(m).getCd()+.4+1.5)*(ch.get(m).getC())
-                                                            + (1+b.get(n1).getP_atk())*(1+b.get(n1).getCd()+.4+1.5)*(b.get(n1).getC())
+                                    atk = 1.35*((w.get(i).getP_atk())
+                                            + (r.get(j).getP_atk())
+                                                + (n.get(k).getP_atk())
+                                                    + (h.get(l).getP_atk())
+                                                        + (ch.get(m).getP_atk())
+                                                            +  (b.get(n1).getP_atk()))
                                                     ;
                                 }
                                 //broken set
                                 else{
-                                    atk = (1+w.get(i).getP_atk())*(1+w.get(i).getCd())*(w.get(i).getC())
-                                            + (1+r.get(j).getP_atk())*(1+r.get(j).getCd())*(r.get(j).getC())
-                                                + (1+n.get(k).getP_atk())*(1+n.get(k).getCd())*(n.get(k).getC())
-                                                    + (1+h.get(l).getP_atk())*(1+h.get(l).getCd())*(h.get(l).getC())
-                                                        + (1+ch.get(m).getP_atk())*(1+ch.get(m).getCd())*(ch.get(m).getC())
-                                                            + (1+b.get(n1).getP_atk())*(1+b.get(n1).getCd())*(b.get(n1).getC())
+                                    atk = ((w.get(i).getP_atk())
+                                            + (r.get(j).getP_atk())
+                                                + (n.get(k).getP_atk())
+                                                    + (h.get(l).getP_atk())
+                                                        + (ch.get(m).getP_atk())
+                                                            +  (b.get(n1).getP_atk()))
+                                                    ;
+                                }
+                                //dest set
+                                if(desE1+desE2+desE3+desE4+desE5+desE6>=4){
+                                    //atk = 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                    dest = 1.35*((w.get(i).getCd())
+                                            + (r.get(j).getCd())
+                                                + (n.get(k).getCd())
+                                                    + (h.get(l).getCd())
+                                                        + (ch.get(m).getCd())
+                                                            +  (b.get(n1).getCd()))
+                                                    ;
+                                }
+                                //broken set
+                                else{
+                                    dest = ((w.get(i).getCd())
+                                            + (r.get(j).getCd())
+                                                + (n.get(k).getCd())
+                                                    + (h.get(l).getCd())
+                                                        + (ch.get(m).getCd())
+                                                            +  (b.get(n1).getCd()))
                                                     ;
                                 }
 
@@ -471,7 +486,7 @@ public class Bag {
                                     eff+=60;
                                 }
 
-                                if (maxatk<atk && hp>80 && def >40  && crit>=80 && eff>=20 ){
+                                if (atk>catk && hp>=chp && crit>=cCrit &&spd >= cSpeed && def >=cDef  && eff>=cEff && dest>=cCd){
                                     //System.out.println(crit);
                                     maxatk = atk;
                                     maxhp = hp;

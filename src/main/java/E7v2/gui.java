@@ -17,8 +17,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class gui extends JPanel implements ActionListener {
-    protected JTextField f,weapon,head,chest,neck,ring,boot;
+    protected JTextField f,weapon,head,chest,neck,ring,boot,customAtkTxt,customHpTxt,
+                            customCritTxt,customSpeedTxt,customDefTxt,customEffTxt,customCdTxt;
     protected JTextArea a;
+    protected JLabel customAtkLabel, customHpLabel, customCritLabel,customSpeedLabel, customDefLabel,customEffLabel,customCdLabel;
     JButton button;
     private JLabel lweapon,lhead,lchest,lneck,lring,lboot,total;
     private JLabel patk,pdef,php,pcrit,pcritdmg,speed,eff,effres,set,pk;
@@ -59,8 +61,8 @@ public class gui extends JPanel implements ActionListener {
             c.gridy=6+2;
         add(wyvernButton,c);
 
-        critButton = new JButton("90+ Crit");
-        critButton.setActionCommand("Crit");
+        critButton = new JButton("Custom Calcs");
+        critButton.setActionCommand("Custom");
         critButton.addActionListener(this);
             c.gridx=3;
             c.gridy=6+2;
@@ -93,6 +95,70 @@ public class gui extends JPanel implements ActionListener {
             c.gridx=3;
             c.gridy=6+3;
         add(xlsxButton,c);
+
+        //customAtkLabel, customHpLabel, customCritLabel,customSpeedLabel, customDefLabel;
+        customAtkLabel = new JLabel("atk:");
+            c.gridx=4;
+            c.gridy=6+3;
+        add(customAtkLabel,c);
+        customAtkTxt = new JTextField("50       ");
+            c.gridx=5;
+            c.gridy=6+3;
+        add(customAtkTxt,c);
+
+        customHpLabel = new JLabel("hp:");
+        c.gridx=4;
+        c.gridy=6+4;
+        add(customHpLabel,c);
+        customHpTxt = new JTextField("50        ");
+            c.gridx=5;
+            c.gridy=6+4;
+        add(customHpTxt,c);
+
+        customCritLabel = new JLabel("crit chance:");
+            c.gridx=6;
+            c.gridy=6+3;
+        add(customCritLabel,c);
+        customCritTxt = new JTextField("90      ");
+            c.gridx=7;
+            c.gridy=6+3;
+        add(customCritTxt,c);
+
+        customSpeedLabel = new JLabel("speed:");
+        c.gridx=6;
+        c.gridy=6+4;
+        add(customSpeedLabel,c);
+        customSpeedTxt = new JTextField("20     ");
+            c.gridx=7;
+            c.gridy=6+4;
+        add(customSpeedTxt,c);
+                
+        customDefLabel = new JLabel("def:");
+        c.gridx=8;
+        c.gridy=6+3;
+        add(customDefLabel,c);
+        customDefTxt = new JTextField("30       ");
+            c.gridx=9;
+            c.gridy=6+3;
+        add(customDefTxt,c);
+
+        customEffLabel = new JLabel("eff:");
+        c.gridx=10;
+        c.gridy=6+3;
+        add(customEffLabel,c);
+        customEffTxt = new JTextField("60       ");
+            c.gridx=11;
+            c.gridy=6+3;
+        add(customEffTxt,c);
+        
+        customCdLabel = new JLabel("crit dmg:");
+        c.gridx=8;
+        c.gridy=6+4;
+        add(customCdLabel,c);
+        customCdTxt = new JTextField("0     ");
+            c.gridx=9;
+            c.gridy=6+4;
+        add(customCdTxt,c);
     }
 
     public void addTextStuff(){
@@ -360,14 +426,21 @@ public class gui extends JPanel implements ActionListener {
             sumCols();
             revalidate();
         }
-        else if ("Crit".equals(evt.getActionCommand())){
-            Sets s = b.superCritCalcs(b.getW(),b.getH(),b.getCh(),b.getN(),b.getR(),b.getB());
+        else if ("Custom".equals(evt.getActionCommand())){
+
+            Sets s = b.superCustomCalcs(b.getW(),b.getH(),b.getCh(),b.getN(),b.getR(),b.getB(),
+                                        Double.parseDouble(customAtkTxt.getText()),Double.parseDouble(customHpTxt.getText()),
+                                            Double.parseDouble(customCritTxt.getText()),Double.parseDouble(customSpeedTxt.getText()),
+                                                Double.parseDouble(customDefTxt.getText()),Double.parseDouble(customEffTxt.getText()),
+                                                    Double.parseDouble(customCdTxt.getText()))
+                                                ;
             List<String> rows = new ArrayList<String>();
             Collections.addAll(rows,"weapon","head","chest","neck","ring","boot");
             List<String> columns = new ArrayList<String>();
             Collections.addAll(columns,"patk","pdef","php","pcrit","pcritdmg","speed","eff","effres","set","pk");
             Equipment e;
             String values;
+            
             for(int i=0;i<rows.size();i++){
                 for(int j=0;j<columns.size();j++){
                     values="";
