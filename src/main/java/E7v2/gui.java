@@ -3,6 +3,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,14 +24,14 @@ public class gui extends JPanel implements ActionListener {
     protected JTextField f,weapon,head,chest,neck,ring,boot,customAtkTxt,customHpTxt,
                             customCritTxt,customSpeedTxt,customDefTxt,customEffTxt,customCdTxt;
     protected JTextArea a;
-    protected JLabel customAtkLabel, customHpLabel, customCritLabel,customSpeedLabel, customDefLabel,customEffLabel,customCdLabel;
+    protected JLabel customAtkLabel, customHpLabel, customCritLabel,customSpeedLabel, customDefLabel,customEffLabel,customCdLabel,customLabel;
     JButton button;
     private JLabel lweapon,lhead,lchest,lneck,lring,lboot,total;
     private JLabel patk,pdef,php,pcrit,pcritdmg,speed,eff,effres,set,pk;
     Bag b;
     Map<String,JTextField> items,sumItems;
     Map<String,Double> history;
-    final JButton setButton,spdButton,resetButton,wyvernButton,bellaButton,hpButton,critButton,xlsxButton;
+    final JButton setButton,spdButton,resetButton,wyvernButton,bellaButton,hpButton,critButton,xlsxButton,saveButton,loadButton;
     protected ExportXLSX xlsx;
     int cnt;
     
@@ -68,6 +72,11 @@ public class gui extends JPanel implements ActionListener {
             c.gridy=6+2;
         add(critButton,c);
 
+        customLabel = new JLabel("Custom Settings:");
+            c.gridx=5;
+            c.gridy=6+2;
+        add(customLabel,c);
+
         bellaButton = new JButton("Belladona");
         bellaButton.setActionCommand("Belladona");
         bellaButton.addActionListener(this);
@@ -95,6 +104,20 @@ public class gui extends JPanel implements ActionListener {
             c.gridx=3;
             c.gridy=6+3;
         add(xlsxButton,c);
+
+        saveButton = new JButton("Save");
+        saveButton.setActionCommand("Save");
+        saveButton.addActionListener(this);
+            c.gridx=2;
+            c.gridy=6+4;
+        add(saveButton,c);
+
+        loadButton = new JButton("Load");
+        loadButton.setActionCommand("Load");
+        loadButton.addActionListener(this);
+            c.gridx=3;
+            c.gridy=6+4;
+        add(loadButton,c);
 
         //customAtkLabel, customHpLabel, customCritLabel,customSpeedLabel, customDefLabel;
         customAtkLabel = new JLabel("atk:");
@@ -159,6 +182,38 @@ public class gui extends JPanel implements ActionListener {
             c.gridx=9;
             c.gridy=6+4;
         add(customCdTxt,c);
+    }
+
+    public void saveStuff(){
+        //customAtkTxt, customHpTxt, customCritTxt,customSpeedTxt, customDefTxt
+        try{
+            List<String> lines = new ArrayList<>();
+            lines.add(customAtkTxt.getText());
+            lines.add(customHpTxt.getText());
+            lines.add(customCritTxt.getText());
+            lines.add(customSpeedTxt.getText());
+            lines.add(customDefTxt.getText());
+            
+
+            Path file = Paths.get("save1.txt");
+            Files.write(file, lines, StandardCharsets.UTF_8);
+            lines.clear();
+        }
+        catch(Exception e){
+
+        }
+    }
+
+    public void loadStuff(){
+
+//        Path file = Paths.get("save1.txt");
+        String file = Utils.loadFileAsString("save1.txt");
+        String[] token = file.split("\\s+");
+        customAtkTxt.setText(token[0]);
+        customHpTxt.setText(token[1]);
+        customCritTxt.setText(token[2]);
+        customSpeedTxt.setText(token[3]);
+        customDefTxt.setText(token[4]);
     }
 
     public void addTextStuff(){
@@ -663,6 +718,13 @@ public class gui extends JPanel implements ActionListener {
             xlsx = new ExportXLSX(getBag().getSets(),getHistory());
             xlsx.loadData();
         }
+        else if ("Save".equals(evt.getActionCommand())){
+            saveStuff();
+        }
+        else if ("Load".equals(evt.getActionCommand())){
+            loadStuff();
+        }
+
     }
 
     private static void createAndShowGUI() {
