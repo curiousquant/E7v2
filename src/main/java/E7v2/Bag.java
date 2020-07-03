@@ -2,6 +2,8 @@ package E7v2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.awt.GridBagConstraints;
+import javax.swing.JLabel;
 
 public class Bag {
 
@@ -9,13 +11,13 @@ public class Bag {
     int[][] inventory;
     private int wcnt = 0;
     private int bcnt = 0;
-    private int cnnt=0;
-    private int hcnt=0;
-    private int ncnt=0;
-    private int rcnt=0;
-    
+    private int cnnt = 0;
+    private int hcnt = 0;
+    private int ncnt = 0;
+    private int rcnt = 0;
+    private int cntbar;
     private int maxw=0,maxb=0,maxc=0,maxh=0,maxn=0,maxr=0;
-
+    Handler handler;
     ArrayList<Equipment> w = new ArrayList<>();
     ArrayList<Equipment> r = new ArrayList<>();
     ArrayList<Equipment> n = new ArrayList<>();
@@ -25,8 +27,9 @@ public class Bag {
 
     ArrayList<Sets> sets = new ArrayList<>();
 
-    public Bag(String path){
+    public Bag(String path,Handler handler){
         loadInventory(path);
+        this.handler=handler;
     }
 
 
@@ -269,7 +272,7 @@ public class Bag {
         Equipment maxCH = ch.get(0);
         Equipment maxB = b.get(0);
         
-
+        cntbar = 1;
         double maxatk = 0;
         double maxhp = 0;
         double atk = 0;
@@ -279,12 +282,29 @@ public class Bag {
         double hp = 0;
         double def = 0;
         double dest = 0;
+        // wcnt=5;
+        // rcnt=5;
+        // ncnt=5;
+        // hcnt=5;
+        // cnnt=5;
+        // bcnt=5;
+
         for (int i=0;i<wcnt;i++){
+            handler.getG().drawProgress(Math.ceil(400*((double)cntbar/(wcnt))));
+            System.out.println(Math.ceil(400*((double)cntbar/(wcnt))));
+            //handler.getG().drawProgress2(cntbar);
+            
+            cntbar++;
+            //progressBar.setText(Integer.toString(getCntBar()));;
+                                
             for (int j=0;j<rcnt;j++){
                 for (int k=0; k<ncnt;k++){
                     for (int l=0; l<hcnt;l++){
                         for(int m=0;m<cnnt;m++){
                             for(int n1=0;n1<bcnt;n1++){
+                                
+                                
+                                
                                 int atkE1 = (w.get(i).getSet().equals("atk")) ? 1:0;
                                 int atkE2 = (r.get(j).getSet().equals("atk")) ? 1:0;
                                 int atkE3 = (n.get(k).getSet().equals("atk")) ? 1:0;
@@ -1143,7 +1163,13 @@ public Sets superCalcsHunt(ArrayList<Equipment> w,ArrayList<Equipment> h, ArrayL
     //     }
     //     return h.get(max_idx);
     // }
-    
+    public int getCntBar(){
+        return this.cntbar;
+    }
+
+    public void setCntBar(int cntbar){
+        this.cntbar = cntbar;
+    }
     public ArrayList<Sets> getSets(){
         return this.sets;
     }
@@ -1243,6 +1269,57 @@ public Sets superCalcsHunt(ArrayList<Equipment> w,ArrayList<Equipment> h, ArrayL
     public void setB(ArrayList<Equipment> b) {
         this.b = b;
     }
+    public Handler getHandler(){
+        return this.handler;
+    }
 
+
+    public int getWcnt() {
+        return this.wcnt;
+    }
+
+    public void setWcnt(int wcnt) {
+        this.wcnt = wcnt;
+    }
+
+    public int getBcnt() {
+        return this.bcnt;
+    }
+
+    public void setBcnt(int bcnt) {
+        this.bcnt = bcnt;
+    }
+
+    public int getCnnt() {
+        return this.cnnt;
+    }
+
+    public void setCnnt(int cnnt) {
+        this.cnnt = cnnt;
+    }
+
+    public int getHcnt() {
+        return this.hcnt;
+    }
+
+    public void setHcnt(int hcnt) {
+        this.hcnt = hcnt;
+    }
+
+    public int getNcnt() {
+        return this.ncnt;
+    }
+
+    public void setNcnt(int ncnt) {
+        this.ncnt = ncnt;
+    }
+
+    public int getRcnt() {
+        return this.rcnt;
+    }
+
+    public void setRcnt(int rcnt) {
+        this.rcnt = rcnt;
+    }
 
 }

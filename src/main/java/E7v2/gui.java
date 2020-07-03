@@ -1,6 +1,12 @@
 package E7v2;
+
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
+import java.awt.Graphics2D;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +30,8 @@ public class gui extends JPanel implements ActionListener {
     protected JTextField f,weapon,head,chest,neck,ring,boot,customAtkTxt,customHpTxt,
                             customCritTxt,customSpeedTxt,customDefTxt,customEffTxt,customCdTxt;
     protected JTextArea a;
-    protected JLabel customAtkLabel, customHpLabel, customCritLabel,customSpeedLabel, customDefLabel,customEffLabel,customCdLabel,customLabel;
+    protected JLabel customAtkLabel, customHpLabel, customCritLabel,customSpeedLabel, 
+                        customDefLabel,customEffLabel,customCdLabel,customLabel,progressBar;
     JButton button;
     private JLabel lweapon,lhead,lchest,lneck,lring,lboot,total;
     private JLabel patk,pdef,php,pcrit,pcritdmg,speed,eff,effres,set,pk;
@@ -34,13 +41,25 @@ public class gui extends JPanel implements ActionListener {
     final JButton setButton,spdButton,resetButton,wyvernButton,bellaButton,hpButton,critButton,xlsxButton,saveButton,loadButton;
     protected ExportXLSX xlsx;
     int cnt;
-    
+    Handler h;
+    private static final int RECT_X = 500;
+    private static final int RECT_Y = 400;
+    private static final int RECT_WIDTH = 400;
+    private static final int RECT_HEIGHT = 20;
+    Rectangle border;
+    Rectangle progress;  
+
     public gui(){
         super(new GridBagLayout());
+
+        border = new Rectangle(RECT_X, RECT_Y, RECT_WIDTH, RECT_HEIGHT);
+        //g2.draw(border);
+
         cnt=0;
         history = new HashMap<>();
-
-        b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v2\\EpicSeven\\res\\bag.txt");
+        h = new Handler(this,new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v2\\EpicSeven\\res\\bag.txt",h));
+        b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v2\\EpicSeven\\res\\bag.txt",h);
+        
         addLabels();
         addTextStuff();
         sumItems = new HashMap<>();
@@ -175,13 +194,18 @@ public class gui extends JPanel implements ActionListener {
         add(customEffTxt,c);
         
         customCdLabel = new JLabel("crit dmg:");
-        c.gridx=8;
-        c.gridy=6+4;
+            c.gridx=8;
+            c.gridy=6+4;
         add(customCdLabel,c);
         customCdTxt = new JTextField("0     ");
             c.gridx=9;
             c.gridy=6+4;
         add(customCdTxt,c);
+
+        progressBar = new JLabel("0");
+            c.gridx=5;
+            c.gridy=6+5;
+        add(progressBar,c);
     }
 
     public void saveStuff(){
@@ -204,6 +228,44 @@ public class gui extends JPanel implements ActionListener {
         }
     }
 
+    protected void paintComponent(Graphics g, double p) {
+        Graphics2D g2 = (Graphics2D) g;
+       
+            //super.paintComponent(g); //lose all stuff 
+            //revalidate();
+            
+        progress = new Rectangle(RECT_X, RECT_Y,(int)(p), RECT_HEIGHT);
+        g2.draw(border);
+
+        g2.setColor(Color.BLUE);
+        g2.draw(progress);
+        g2.fill(progress);
+        
+        //g2.fillRect(RECT_X, RECT_Y, (int)(p), RECT_HEIGHT);
+        //System.out.println((int)(p));
+        revalidate();
+        if (p==400){
+            repaint();
+        }
+     }
+
+     
+    
+    
+    public void drawProgress(double p){
+        //getProgressBar().setText(Double.toString(p));
+        paintComponent(super.getGraphics(),p);
+        
+        //getProgressBar().setText(p);
+        //System.out.println(p);
+    }
+
+    public void drawProgress2(double p){
+        getProgressBar().setText(Double.toString(p));
+        //paintComponent(super.getGraphics(),p);
+        //getProgressBar().setText(p);
+        //System.out.println(p);
+    }
     public void loadStuff(){
 
 //        Path file = Paths.get("save1.txt");
@@ -482,79 +544,82 @@ public class gui extends JPanel implements ActionListener {
             revalidate();
         }
         else if ("Custom".equals(evt.getActionCommand())){
-
-            Sets s = b.superCustomCalcs(b.getW(),b.getH(),b.getCh(),b.getN(),b.getR(),b.getB(),
-                                        Double.parseDouble(customAtkTxt.getText()),Double.parseDouble(customHpTxt.getText()),
-                                            Double.parseDouble(customCritTxt.getText()),Double.parseDouble(customSpeedTxt.getText()),
-                                                Double.parseDouble(customDefTxt.getText()),Double.parseDouble(customEffTxt.getText()),
-                                                    Double.parseDouble(customCdTxt.getText()))
-                                                ;
-            List<String> rows = new ArrayList<String>();
-            Collections.addAll(rows,"weapon","head","chest","neck","ring","boot");
-            List<String> columns = new ArrayList<String>();
-            Collections.addAll(columns,"patk","pdef","php","pcrit","pcritdmg","speed","eff","effres","set","pk");
-            Equipment e;
-            String values;
             
-            for(int i=0;i<rows.size();i++){
-                for(int j=0;j<columns.size();j++){
-                    values="";
-                    e=null;
-                    
-                    if (i==0){
-                        e = s.getWeapon();
+            new Thread() {
+                public void run() {
+                    Sets s = b.superCustomCalcs(b.getW(),b.getH(),b.getCh(),b.getN(),b.getR(),b.getB(),
+                                                Double.parseDouble(customAtkTxt.getText()),Double.parseDouble(customHpTxt.getText()),
+                                                    Double.parseDouble(customCritTxt.getText()),Double.parseDouble(customSpeedTxt.getText()),
+                                                        Double.parseDouble(customDefTxt.getText()),Double.parseDouble(customEffTxt.getText()),
+                                                            Double.parseDouble(customCdTxt.getText()))
+                                                        ;
+                    List<String> rows = new ArrayList<String>();
+                    Collections.addAll(rows,"weapon","head","chest","neck","ring","boot");
+                    List<String> columns = new ArrayList<String>();
+                    Collections.addAll(columns,"patk","pdef","php","pcrit","pcritdmg","speed","eff","effres","set","pk");
+                    Equipment e;
+                    String values;
+                    for(int i=0;i<rows.size();i++){
+                        for(int j=0;j<columns.size();j++){
+                            values="";
+                            e=null;
+                            
+                            if (i==0){
+                                e = s.getWeapon();
+                            }
+                            else if(i==1){
+                                e = s.getHead();
+                            }
+                            else if(i==2){
+                                e = s.getChest();
+                            }
+                            else if(i==3){
+                                e = s.getNeck();
+                            }
+                            else if(i==4){
+                                e = s.getRing();
+                            }
+                            else if(i==5){
+                                e = s.getBoot();
+                            }
+        
+                            if(j==0){
+                                values = Integer.toString(e.getP_atk());
+                            }
+                            else if(j==1){
+                                values = Integer.toString(e.getP_def());
+                            }
+                            else if(j==2){
+                                values = Integer.toString(e.getP_hp());
+                            }
+                            else if(j==3){
+                                values = Integer.toString(e.getC());
+                            }
+                            else if(j==4){
+                                values = Integer.toString(e.getCd());
+                            }
+                            else if(j==5){
+                                values = Integer.toString(e.getSpd());
+                            }
+                            else if(j==6){
+                                values = Integer.toString(e.getEff());
+                            }
+                            else if(j==7){
+                                values = Integer.toString(e.getEffres());
+                            }
+                            else if(j==8){
+                                values = e.getSet();
+                            }
+                            else if(j==9){
+                                values = Integer.toString(e.getPk());
+                            }
+                            items.get(rows.get(i)+columns.get(j)).setText(values);
+                        }
                     }
-                    else if(i==1){
-                        e = s.getHead();
-                    }
-                    else if(i==2){
-                        e = s.getChest();
-                    }
-                    else if(i==3){
-                        e = s.getNeck();
-                    }
-                    else if(i==4){
-                        e = s.getRing();
-                    }
-                    else if(i==5){
-                        e = s.getBoot();
-                    }
-
-                    if(j==0){
-                        values = Integer.toString(e.getP_atk());
-                    }
-                    else if(j==1){
-                        values = Integer.toString(e.getP_def());
-                    }
-                    else if(j==2){
-                        values = Integer.toString(e.getP_hp());
-                    }
-                    else if(j==3){
-                        values = Integer.toString(e.getC());
-                    }
-                    else if(j==4){
-                        values = Integer.toString(e.getCd());
-                    }
-                    else if(j==5){
-                        values = Integer.toString(e.getSpd());
-                    }
-                    else if(j==6){
-                        values = Integer.toString(e.getEff());
-                    }
-                    else if(j==7){
-                        values = Integer.toString(e.getEffres());
-                    }
-                    else if(j==8){
-                        values = e.getSet();
-                    }
-                    else if(j==9){
-                        values = Integer.toString(e.getPk());
-                    }
-                    items.get(rows.get(i)+columns.get(j)).setText(values);
+                    sumCols();
+                    revalidate();
                 }
-            }
-            sumCols();
-            revalidate();
+            }.start();
         }
         else if ("Belladona".equals(evt.getActionCommand())){
             Sets s = b.superBellaCalcs(b.getW(),b.getH(),b.getCh(),b.getN(),b.getR(),b.getB());
@@ -694,7 +759,7 @@ public class gui extends JPanel implements ActionListener {
 
         }
         else if ("Reset".equals(evt.getActionCommand())){
-            b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v2\\EpicSeven\\res\\bag.txt");
+            b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v2\\EpicSeven\\res\\bag.txt",getHandler());
             List<String> rows = new ArrayList<String>();
             Collections.addAll(rows,"weapon","head","chest","neck","ring","boot");
             List<String> columns = new ArrayList<String>();
@@ -729,14 +794,15 @@ public class gui extends JPanel implements ActionListener {
 
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("TextDemo");
+        JFrame frame = new JFrame("E7");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
         //Add contents to the window.
         frame.add(new gui());
  
         //Display the window.
-        frame.pack();
+        frame.setSize(1000, 500);
+        //frame.pack();
         frame.setVisible(true);
     }
 
@@ -854,6 +920,11 @@ public class gui extends JPanel implements ActionListener {
                 add(total,c);
     }
 
+
+    public JLabel getProgressBar(){
+        return this.progressBar;
+    }
+
     public Bag getBag(){
         return this.b;
     }
@@ -866,15 +937,31 @@ public class gui extends JPanel implements ActionListener {
         this.cnt=c;
     }
 
+    public Handler getHandler(){
+        return this.h;
+    }
+
+
     public static void main(String[] args) {
         //Schedule a job for the event dispatch thread:
         //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
+        
+        Thread thread = new Thread(new Runnable() {
+        //Thread thread = new Thread(){
+            public void run(){
                 createAndShowGUI();
+                System.out.println("Thread Running");
             }
-        });
-    }
+          });
+          thread.start();
+        }
+
+    //     javax.swing.SwingUtilities.invokeLater(new Runnable() {
+    //         public void run() {
+                
+    //         }
+    //     });
+    // }
 
 
 }
