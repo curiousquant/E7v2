@@ -57,8 +57,8 @@ public class gui extends JPanel implements ActionListener {
 
         cnt=0;
         history = new HashMap<>();
-        h = new Handler(this,new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v2\\EpicSeven\\res\\bag.txt",h));
-        b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v2\\EpicSeven\\res\\bag.txt",h);
+        h = new Handler(this,new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\bag.txt",h));
+        b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\bag.txt",h);
         
         addLabels();
         addTextStuff();
@@ -747,7 +747,7 @@ public class gui extends JPanel implements ActionListener {
 
         }
         else if ("Reset".equals(evt.getActionCommand())){
-            b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v2\\EpicSeven\\res\\bag.txt",getHandler());
+            b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\bag.txt",getHandler());
             List<String> rows = new ArrayList<String>();
             Collections.addAll(rows,"weapon","head","chest","neck","ring","boot");
             List<String> columns = new ArrayList<String>();
