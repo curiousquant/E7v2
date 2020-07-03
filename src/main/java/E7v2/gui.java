@@ -777,7 +777,6 @@ public class gui extends JPanel implements ActionListener {
         else if ("Load".equals(evt.getActionCommand())){
             loadStuff();
         }
-
     }
 
     private static void createAndShowGUI() {
@@ -792,6 +791,7 @@ public class gui extends JPanel implements ActionListener {
         frame.setSize(1000, 500);
         //frame.pack();
         frame.setVisible(true);
+        frame.setResizable(false);
     }
 
     public void addLabels(){
