@@ -31,7 +31,7 @@ public class gui extends JPanel implements ActionListener {
                             customCritTxt,customSpeedTxt,customDefTxt,customEffTxt,customCdTxt;
     protected JTextArea a;
     protected JLabel customAtkLabel, customHpLabel, customCritLabel,customSpeedLabel, 
-                        customDefLabel,customEffLabel,customCdLabel,customLabel,progressBar;
+                        customDefLabel,customEffLabel,customCdLabel,customLabel;
     JButton button;
     private JLabel lweapon,lhead,lchest,lneck,lring,lboot,total;
     private JLabel patk,pdef,php,pcrit,pcritdmg,speed,eff,effres,set,pk;
@@ -202,10 +202,6 @@ public class gui extends JPanel implements ActionListener {
             c.gridy=6+4;
         add(customCdTxt,c);
 
-        progressBar = new JLabel("0");
-            c.gridx=5;
-            c.gridy=6+5;
-        add(progressBar,c);
     }
 
     public void saveStuff(){
@@ -249,8 +245,6 @@ public class gui extends JPanel implements ActionListener {
         }
      }
 
-     
-    
     
     public void drawProgress(double p){
         //getProgressBar().setText(Double.toString(p));
@@ -260,12 +254,6 @@ public class gui extends JPanel implements ActionListener {
         //System.out.println(p);
     }
 
-    public void drawProgress2(double p){
-        getProgressBar().setText(Double.toString(p));
-        //paintComponent(super.getGraphics(),p);
-        //getProgressBar().setText(p);
-        //System.out.println(p);
-    }
     public void loadStuff(){
 
 //        Path file = Paths.get("save1.txt");
@@ -920,10 +908,6 @@ public class gui extends JPanel implements ActionListener {
                 add(total,c);
     }
 
-
-    public JLabel getProgressBar(){
-        return this.progressBar;
-    }
 
     public Bag getBag(){
         return this.b;
