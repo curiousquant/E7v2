@@ -1,10 +1,7 @@
 package E7v2;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.awt.GridBagConstraints;
-import javax.swing.JLabel;
+import java.util.HashMap;
 
 public class Bag {
 
@@ -26,10 +23,13 @@ public class Bag {
     ArrayList<Equipment> ch = new ArrayList<>();
     ArrayList<Equipment> b = new ArrayList<>();
 
+    HashMap<String,Hero> heroBag = new HashMap<>();
+
     ArrayList<Sets> sets = new ArrayList<>();
 
-    public Bag(String path, Handler handler) {
+    public Bag(String path, String heroPath, Handler handler) {
         loadInventory(path);
+        loadHeros(heroPath);
         this.handler = handler;
     }
 
@@ -175,7 +175,7 @@ public class Bag {
         Equipment maxH = h.get(0);
         Equipment maxCH = ch.get(0);
         Equipment maxB = b.get(0);
-        
+
         int cntbar = 1;
         double maxatk = 0;
         double atk = 0;
@@ -279,7 +279,7 @@ public class Bag {
     // Double.parseDouble(customDefTxt.getText()))
     public Sets superCustomCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Double catk, Double chp,
-            Double cCrit, Double cSpeed, Double cDef, Double cEff, Double cCd) {
+            Double cCrit, Double cSpeed, Double cDef, Double cEff, Double cCd, Hero hero) {
         Equipment maxW = w.get(0);
         Equipment maxR = r.get(0);
         Equipment maxN = n.get(0);
@@ -287,16 +287,24 @@ public class Bag {
         Equipment maxCH = ch.get(0);
         Equipment maxB = b.get(0);
 
-        cntbar = 1;
+        int heroatk = hero.getAtk();
+        int herodef = hero.getDef();
+        int herohp = hero.getHp();
+        int herospd = hero.getSpd();
+        int herocrit = hero.getCrit();
+        int herocd = hero.getCritdmg();
+        int heroeff = hero.getEff();
+        int heroeffres = hero.getEffres();
+
         double maxatk = 0;
-        double maxhp = 0;
-        double atk = 0;
+        double atk = 0,fatk=0;
         double crit = 0;
         double eff = 0;
         double spd = 0;
-        double hp = 0;
-        double def = 0;
+        double hp = 0,fhp=0;
+        double def = 0,fdef=0;
         double dest = 0;
+        cntbar = 1;
         // wcnt=5;
         // rcnt=5;
         // ncnt=5;
@@ -367,8 +375,11 @@ public class Bag {
                                 int spdE5 = (ch.get(m).getSet().equals("spd")) ? 1 : 0;
                                 int spdE6 = (b.get(n1).getSet().equals("spd")) ? 1 : 0;
 
-                                def = (w.get(i).getP_def()) + (r.get(j).getP_def()) + (n.get(k).getP_def())
+                                def =(w.get(i).getP_def()) + (r.get(j).getP_def()) + (n.get(k).getP_def())
                                         + (h.get(l).getP_def()) + (ch.get(m).getP_def()) + (b.get(n1).getP_def());
+
+                                fdef = (w.get(i).getF_def()) + (r.get(j).getF_def()) + (n.get(k).getF_def())
+                                + (h.get(l).getF_def()) + (ch.get(m).getF_def()) + (b.get(n1).getF_def());
 
                                 if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 2) {
                                     def += 15;
@@ -377,8 +388,15 @@ public class Bag {
                                 } else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 6) {
                                     def += 45;
                                 }
-                                hp = (w.get(i).getP_hp()) + (r.get(j).getP_hp()) + (n.get(k).getP_hp())
+                                
+                                def = fdef + (1+def/100)*herodef;
+
+
+                                hp =  (w.get(i).getP_hp()) + (r.get(j).getP_hp()) + (n.get(k).getP_hp())
                                         + (h.get(l).getP_hp()) + (ch.get(m).getP_hp()) + (b.get(n1).getP_hp());
+                                fhp = (w.get(i).getF_hp()) + (r.get(j).getF_hp()) + (n.get(k).getF_hp())
+                                + (h.get(l).getF_hp()) + (ch.get(m).getF_hp()) + (b.get(n1).getF_hp());
+                                
                                 if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 2) {
                                     hp += 15;
                                 } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 4) {
@@ -386,37 +404,45 @@ public class Bag {
                                 } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 6) {
                                     hp += 45;
                                 }
+
+                                hp = fhp + (1+hp/100)*herohp;
+
                                 if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 2) {
-                                    crit = 12 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                    crit = herocrit + 12 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
                                             + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
                                 } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 4) {
-                                    crit = 24 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                    crit = herocrit + 24 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
                                             + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
                                 } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 6) {
-                                    crit = 36 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                    crit = herocrit + 36 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
                                             + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
                                 } else {
-                                    crit = (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC()) + (h.get(l).getC())
+                                    crit = herocrit + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC()) + (h.get(l).getC())
                                             + (ch.get(m).getC()) + (b.get(n1).getC());
                                 }
 
                                 // atk set
-                                if (atkE1 + atkE2 + atkE3 + atkE4 + atkE5 + atkE6 >= 4) {
+                                fatk = (w.get(i).getF_atk()) + (r.get(j).getF_atk()) + (n.get(k).getF_atk())
+                                + (h.get(l).getF_atk()) + (ch.get(m).getF_atk()) + (b.get(n1).getF_atk());
+
+                                if (atkE1 + atkE2 + atkE3 + atkE4 + atkE5 + atkE6 >= 4) {    
                                     // atk =
                                     // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
-                                    atk = 1.35 * ((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
+                                    atk = 35+((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
                                             + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                    atk = fatk+heroatk*(1+atk/100);
                                 }
                                 // broken set
                                 else {
                                     atk = ((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
                                             + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                    atk = fatk+heroatk*(1+atk/100);
                                 }
                                 // dest set
                                 if (desE1 + desE2 + desE3 + desE4 + desE5 + desE6 >= 4) {
                                     // atk =
                                     // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
-                                    dest = 1.35 * ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
+                                    dest = 35 + ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
                                             + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
                                 }
                                 // broken set
@@ -425,16 +451,18 @@ public class Bag {
                                             + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
                                 }
 
+                                dest = dest + herocd;
+
                                 if (spdE1 + spdE2 + spdE3 + spdE4 + spdE5 + spdE6 >= 4) {
                                     // System.out.println(spdE1+spdE2+spdE3+spdE4+spdE5+spdE6);
                                     // atk =
                                     // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
-                                    spd = 1.25 * (w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd()
+                                    spd = 1.25*herospd + (w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd()
                                             + h.get(l).getSpd() + ch.get(m).getSpd() + b.get(n1).getSpd());
                                 }
                                 // broken set
                                 else {
-                                    spd = w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd() + h.get(l).getSpd()
+                                    spd = herospd + w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd() + h.get(l).getSpd()
                                             + ch.get(m).getSpd() + b.get(n1).getSpd();
                                 }
 
@@ -448,12 +476,11 @@ public class Bag {
                                 } else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 6) {
                                     eff += 60;
                                 }
+                                
+                                eff=eff+heroeff;
 
                                 if (atk > catk && hp >= chp && crit >= cCrit && spd >= cSpeed && def >= cDef
                                         && eff >= cEff && dest >= cCd) {
-                                    // System.out.println(crit);
-                                    maxatk = atk;
-                                    maxhp = hp;
 
                                     maxW = w.get(i);
                                     maxR = r.get(j);
@@ -584,7 +611,6 @@ public class Bag {
                                     setMaxb(n1);
                                 }
                             }
-
                         }
                     }
                 }
@@ -928,7 +954,39 @@ public class Bag {
         }
     }
 
-
+    private void loadHeros(String path) {
+        String file = Utils.loadFileAsString(path);
+        String[] token = file.split("\\s+");
+        String name="";
+        String txt = "";
+        int atk=0, def=0, hp=0, spd=0, crit=0, critdmg=0, eff=0, effres=0;
+        for (int i = 0; i < token.length / 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                txt = token[i * 9 + j];
+                if (j == 0) {
+                    name = txt;
+                } else if (j == 1) {
+                    atk = Utils.parseInt(txt);
+                } else if (j == 2) {
+                    def = Utils.parseInt(txt);
+                } else if (j == 3) {
+                    hp = Utils.parseInt(txt);
+                } else if (j == 4) {
+                    spd = Utils.parseInt(txt);
+                } else if (j == 5) {
+                    crit = Utils.parseInt(txt);
+                } else if (j == 6) {
+                    critdmg = Utils.parseInt(txt);
+                } else if (j == 7) {
+                    eff = Utils.parseInt(txt);
+                } else if (j == 8) {
+                    effres = Utils.parseInt(txt);
+                }
+            }
+            heroBag.put(name,new Hero(name,atk,def,hp,spd,crit,critdmg,eff,effres));
+            //System.out.println(name+atk+def+hp+spd+crit+critdmg+eff+effres);
+        }
+    }
 
     private void loadInventory(String path) {
 
@@ -1015,6 +1073,16 @@ public class Bag {
     // }
     // return h.get(max_idx);
     // }
+
+    public HashMap<String,Hero> getHeroBag() {
+        return this.heroBag;
+    }
+
+    public void setHeroBag(HashMap<String,Hero> heroBag) {
+        this.heroBag = heroBag;
+    }
+
+
     public int getCntBar() {
         return this.cntbar;
     }
