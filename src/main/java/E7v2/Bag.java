@@ -426,7 +426,7 @@ public class Bag {
                                 + (h.get(l).getF_atk()) + (ch.get(m).getF_atk()) + (b.get(n1).getF_atk());
 
                                 if (atkE1 + atkE2 + atkE3 + atkE4 + atkE5 + atkE6 >= 4) {    
-                                    // atk =
+                                   
                                     // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
                                     atk = 35+((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
                                             + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
@@ -436,6 +436,8 @@ public class Bag {
                                 else {
                                     atk = ((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
                                             + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                          
+                                    
                                     atk = fatk+heroatk*(1+atk/100);
                                 }
                                 // dest set
@@ -454,8 +456,6 @@ public class Bag {
                                 dest = dest + herocd;
 
                                 if (spdE1 + spdE2 + spdE3 + spdE4 + spdE5 + spdE6 >= 4) {
-                                    // System.out.println(spdE1+spdE2+spdE3+spdE4+spdE5+spdE6);
-                                    // atk =
                                     // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
                                     spd = 1.25*herospd + (w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd()
                                             + h.get(l).getSpd() + ch.get(m).getSpd() + b.get(n1).getSpd());
@@ -479,9 +479,10 @@ public class Bag {
                                 
                                 eff=eff+heroeff;
 
-                                if (atk > catk && hp >= chp && crit >= cCrit && spd >= cSpeed && def >= cDef
+                                if (atk >= catk && hp >= chp && crit >= cCrit && spd >= cSpeed && def >= cDef
                                         && eff >= cEff && dest >= cCd) {
-
+                                    
+                                    //System.out.println(atk);  
                                     maxW = w.get(i);
                                     maxR = r.get(j);
                                     maxN = n.get(k);
