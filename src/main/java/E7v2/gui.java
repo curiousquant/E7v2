@@ -1,6 +1,7 @@
 package E7v2;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -42,10 +43,10 @@ public class gui extends JPanel implements ActionListener {
     Bag b;
     Map<String, JTextField> items, sumItems;
     Map<String, Double> history;
-    final JButton setButton, spdButton, resetButton, wyvernButton, bellaButton, hpButton, critButton, xlsxButton,
-            saveButton, loadButton;
+    JButton setButton, spdButton, resetButton, wyvernButton, bellaButton, hpButton, critButton, xlsxButton,
+            saveButton, loadButton, stopButton;
     protected ExportXLSX xlsx;
-    int cnt;
+    int cnt,cnt2;
     Handler h;
     private static final int RECT_X = 500;
     private static final int RECT_Y = 400;
@@ -53,248 +54,28 @@ public class gui extends JPanel implements ActionListener {
     private static final int RECT_HEIGHT = 20;
     Rectangle border;
     Rectangle progress;
-
+    Thread threadcustom,threadbella,threadspd,threadatk,threadhp,threadwyvern;
+    int threadCnt=1;
+    Map<Integer,FinalHero> fhero;
     public gui() {
         super(new GridBagLayout());
 
         border = new Rectangle(RECT_X, RECT_Y, RECT_WIDTH, RECT_HEIGHT);
-        // g2.draw(border);
-
+        
         cnt = 0;
+        cnt2 = 0;
+        fhero = new HashMap<>();
         history = new HashMap<>();
+        sumItems = new HashMap<>();
         h = new Handler(this, new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\bag.txt",
                 "C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\herobag.txt", h));
         b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\bag.txt",
                 "C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\herobag.txt", h);
-
-        String[] heros = new String[b.getHeroBag().size()];
-        Iterator hmIterator = b.getHeroBag().entrySet().iterator();
-        int tmpcnt = 0;
-        while (hmIterator.hasNext()) {
-            Map.Entry mapElement = (Map.Entry) hmIterator.next();
-            Hero h = (Hero) mapElement.getValue();
-
-            System.out.println(mapElement.getKey() + " : " + h.getName());
-            heros[tmpcnt] = (String) mapElement.getKey();
-            tmpcnt++;
-        }
-
-        GridBagConstraints c = new GridBagConstraints();
-        heroCb = new JComboBox<String>(heros);
-        heroCb.setMaximumSize(heroCb.getPreferredSize());
-        c.gridx = 0;
-        c.gridy = 6 + 5;
-        add(heroCb, c);
-
-        // Hero Stats
-        heroAtkLabel = new JLabel("atk:");
-        c.gridx = 0;
-        c.gridy = 6 + 6;
-        add(heroAtkLabel, c);
-        heroAtkTxt = new JTextField("0       ");
-        c.gridx = 1;
-        c.gridy = 6 + 6;
-        add(heroAtkTxt, c);
-        heroDefLabel = new JLabel("def:");
-        c.gridx = 0;
-        c.gridy = 6 + 7;
-        add(heroDefLabel, c);
-        heroDefTxt = new JTextField("0       ");
-        c.gridx = 1;
-        c.gridy = 6 + 7;
-        add(heroDefTxt, c);
-        heroHpLabel = new JLabel("hp:");
-        c.gridx = 0;
-        c.gridy = 6 + 8;
-        add(heroHpLabel, c);
-        heroHpTxt = new JTextField("0       ");
-        c.gridx = 1;
-        c.gridy = 6 + 8;
-        add(heroHpTxt, c);
-        heroSpdLabel = new JLabel("speed:");
-        c.gridx = 0;
-        c.gridy = 6 + 9;
-        add(heroSpdLabel, c);
-        heroSpdTxt = new JTextField("0       ");
-        c.gridx = 1;
-        c.gridy = 6 + 9;
-        add(heroSpdTxt, c);
-
-        heroCritLabel = new JLabel("crit:");
-        c.gridx = 2;
-        c.gridy = 6 + 6;
-        add(heroCritLabel, c);
-        heroCritTxt = new JTextField("0       ");
-        c.gridx = 3;
-        c.gridy = 6 + 6;
-        add(heroCritTxt, c);
-        heroCdLabel = new JLabel("crit dmg:");
-        c.gridx = 2;
-        c.gridy = 6 + 7;
-        add(heroCdLabel, c);
-        heroCdTxt = new JTextField("0       ");
-        c.gridx = 3;
-        c.gridy = 6 + 7;
-        add(heroCdTxt, c);
-        heroEffLabel = new JLabel("eff:");
-        c.gridx = 2;
-        c.gridy = 6 + 8;
-        add(heroEffLabel, c);
-        heroEffTxt = new JTextField("0       ");
-        c.gridx = 3;
-        c.gridy = 6 + 8;
-        add(heroEffTxt, c);
-        heroEffResLabel = new JLabel("eff res:");
-        c.gridx = 2;
-        c.gridy = 6 + 9;
-        add(heroEffResLabel, c);
-        heroEffResTxt = new JTextField("0       ");
-        c.gridx = 3;
-        c.gridy = 6 + 9;
-        add(heroEffResTxt, c);
-
+        
         addLabels();
+        addHeros();
         addTextStuff();
-        sumItems = new HashMap<>();
-        setButton = new JButton("Run Calcs");
-        setButton.setActionCommand("RunCalcs");
-        setButton.addActionListener(this);
-        c.gridx = 0;
-        c.gridy = 6 + 2;
-        add(setButton, c);
-        spdButton = new JButton("Run Speed Calcs");
-        spdButton.setActionCommand("RunSpdCalcs");
-        spdButton.addActionListener(this);
-        c.gridx = 1;
-        c.gridy = 6 + 2;
-        add(spdButton, c);
-
-        wyvernButton = new JButton("Wyvern 13");
-        wyvernButton.setActionCommand("Wyvern");
-        wyvernButton.addActionListener(this);
-        c.gridx = 2;
-        c.gridy = 6 + 2;
-        add(wyvernButton, c);
-
-        critButton = new JButton("Custom Calcs");
-        critButton.setActionCommand("Custom");
-        critButton.addActionListener(this);
-        c.gridx = 3;
-        c.gridy = 6 + 2;
-        add(critButton, c);
-
-        customLabel = new JLabel("Custom Settings:");
-        c.gridx = 5;
-        c.gridy = 6 + 2;
-        add(customLabel, c);
-
-        bellaButton = new JButton("Belladona");
-        bellaButton.setActionCommand("Belladona");
-        bellaButton.addActionListener(this);
-        c.gridx = 0;
-        c.gridy = 6 + 3;
-        add(bellaButton, c);
-
-        hpButton = new JButton("Hp Calcs");
-        hpButton.setActionCommand("Hp");
-        hpButton.addActionListener(this);
-        c.gridx = 1;
-        c.gridy = 6 + 3;
-        add(hpButton, c);
-
-        resetButton = new JButton("Reset");
-        resetButton.setActionCommand("Reset");
-        resetButton.addActionListener(this);
-        c.gridx = 2;
-        c.gridy = 6 + 3;
-        add(resetButton, c);
-
-        xlsxButton = new JButton("Export XLSX");
-        xlsxButton.setActionCommand("XLSX");
-        xlsxButton.addActionListener(this);
-        c.gridx = 3;
-        c.gridy = 6 + 3;
-        add(xlsxButton, c);
-
-        saveButton = new JButton("Save");
-        saveButton.setActionCommand("Save");
-        saveButton.addActionListener(this);
-        c.gridx = 2;
-        c.gridy = 6 + 4;
-        add(saveButton, c);
-
-        loadButton = new JButton("Load");
-        loadButton.setActionCommand("Load");
-        loadButton.addActionListener(this);
-        c.gridx = 3;
-        c.gridy = 6 + 4;
-        add(loadButton, c);
-
-        // customAtkLabel, customHpLabel, customCritLabel,customSpeedLabel,
-        // customDefLabel;
-        customAtkLabel = new JLabel("atk:");
-        c.gridx = 4;
-        c.gridy = 6 + 3;
-        add(customAtkLabel, c);
-        customAtkTxt = new JTextField("50       ");
-        c.gridx = 5;
-        c.gridy = 6 + 3;
-        add(customAtkTxt, c);
-
-        customHpLabel = new JLabel("hp:");
-        c.gridx = 4;
-        c.gridy = 6 + 4;
-        add(customHpLabel, c);
-        customHpTxt = new JTextField("50        ");
-        c.gridx = 5;
-        c.gridy = 6 + 4;
-        add(customHpTxt, c);
-
-        customCritLabel = new JLabel("crit chance:");
-        c.gridx = 6;
-        c.gridy = 6 + 3;
-        add(customCritLabel, c);
-        customCritTxt = new JTextField("90      ");
-        c.gridx = 7;
-        c.gridy = 6 + 3;
-        add(customCritTxt, c);
-
-        customSpeedLabel = new JLabel("speed:");
-        c.gridx = 6;
-        c.gridy = 6 + 4;
-        add(customSpeedLabel, c);
-        customSpeedTxt = new JTextField("20     ");
-        c.gridx = 7;
-        c.gridy = 6 + 4;
-        add(customSpeedTxt, c);
-
-        customDefLabel = new JLabel("def:");
-        c.gridx = 8;
-        c.gridy = 6 + 3;
-        add(customDefLabel, c);
-        customDefTxt = new JTextField("30       ");
-        c.gridx = 9;
-        c.gridy = 6 + 3;
-        add(customDefTxt, c);
-
-        customEffLabel = new JLabel("eff:");
-        c.gridx = 10;
-        c.gridy = 6 + 3;
-        add(customEffLabel, c);
-        customEffTxt = new JTextField("60       ");
-        c.gridx = 11;
-        c.gridy = 6 + 3;
-        add(customEffTxt, c);
-
-        customCdLabel = new JLabel("crit dmg:");
-        c.gridx = 8;
-        c.gridy = 6 + 4;
-        add(customCdLabel, c);
-        customCdTxt = new JTextField("0     ");
-        c.gridx = 9;
-        c.gridy = 6 + 4;
-        add(customCdTxt, c);
-
+        addButtons();
     }
 
     public void calcHero() {
@@ -454,6 +235,13 @@ public class gui extends JPanel implements ActionListener {
         heroEffResTxt.setText(String.valueOf(
                 Math.floor(selectedHero.getEffres() + (Double.parseDouble(sumItems.get(columns.get(7)).getText())))));
         System.out.println(selectedHero.getEff());
+
+        getFhero().put(getCnt2(),new FinalHero(selectedHero.getName(),Double.parseDouble(heroAtkTxt.getText()),
+                                Double.parseDouble(heroDefTxt.getText()),
+                                Double.parseDouble(heroHpTxt.getText()),Double.parseDouble(heroSpdTxt.getText()),
+                                Double.parseDouble(heroCritTxt.getText()),Double.parseDouble(heroCdTxt.getText()),
+                                Double.parseDouble(heroEffTxt.getText()),Double.parseDouble(heroEffResTxt.getText())));
+        cnt2++;
     }
 
     public void saveStuff() {
@@ -465,7 +253,7 @@ public class gui extends JPanel implements ActionListener {
             lines.add(customCritTxt.getText());
             lines.add(customSpeedTxt.getText());
             lines.add(customDefTxt.getText());
-
+            lines.add(customEffTxt.getText());
             Path file = Paths.get("save1.txt");
             Files.write(file, lines, StandardCharsets.UTF_8);
             lines.clear();
@@ -513,6 +301,7 @@ public class gui extends JPanel implements ActionListener {
         customCritTxt.setText(token[2]);
         customSpeedTxt.setText(token[3]);
         customDefTxt.setText(token[4]);
+        customEffTxt.setText(token[5]);
     }
 
     public void addTextStuff() {
@@ -578,198 +367,229 @@ public class gui extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
 
         if ("RunCalcs".equals(evt.getActionCommand())) {
-            Sets s = b.superCalcs(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB());
-            List<String> rows = new ArrayList<String>();
-            Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
-            List<String> columns = new ArrayList<String>();
-            Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
-                    "fdef", "fhp", "set", "pk");
-            Equipment e;
-            String values;
-            for (int i = 0; i < rows.size(); i++) {
-                for (int j = 0; j < columns.size(); j++) {
-                    values = "";
-                    e = null;
+            threadatk = new Thread() {
+                public void run() {
+                    //Sets s = b.superCalcs(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB());
+                    Sets s = b.superMaxAtkCalcs(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB(),
+                                    Double.parseDouble(customAtkTxt.getText()), Double.parseDouble(customHpTxt.getText()),
+                                    Double.parseDouble(customCritTxt.getText()), Double.parseDouble(customSpeedTxt.getText()),
+                                    Double.parseDouble(customDefTxt.getText()), Double.parseDouble(customEffTxt.getText()),
+                                    Double.parseDouble(customCdTxt.getText()),
+                                    b.getHeroBag().get(heroCb.getSelectedItem().toString()));
 
-                    if (i == 0) {
-                        e = s.getWeapon();
-                    } else if (i == 1) {
-                        e = s.getHead();
-                        // System.out.println(e.pk+"!");
-                    } else if (i == 2) {
-                        e = s.getChest();
-                    } else if (i == 3) {
-                        e = s.getNeck();
-                    } else if (i == 4) {
-                        e = s.getRing();
-                    } else if (i == 5) {
-                        e = s.getBoot();
-                    }
+                    List<String> rows = new ArrayList<String>();
+                    Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
+                    List<String> columns = new ArrayList<String>();
+                    Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
+                            "fdef", "fhp", "set", "pk");
+                    Equipment e;
+                    String values;
+                    for (int i = 0; i < rows.size(); i++) {
+                        for (int j = 0; j < columns.size(); j++) {
+                            values = "";
+                            e = null;
 
-                    if (j == 0) {
-                        values = Integer.toString(e.getP_atk());
-                    } else if (j == 1) {
-                        values = Integer.toString(e.getP_def());
-                    } else if (j == 2) {
-                        values = Integer.toString(e.getP_hp());
-                    } else if (j == 3) {
-                        values = Integer.toString(e.getC());
-                    } else if (j == 4) {
-                        values = Integer.toString(e.getCd());
-                    } else if (j == 5) {
-                        values = Integer.toString(e.getSpd());
-                    } else if (j == 6) {
-                        values = Integer.toString(e.getEff());
-                    } else if (j == 7) {
-                        values = Integer.toString(e.getEffres());
-                    } else if (j == 8) {
-                        // values = e.getSet();
-                        values = Integer.toString(e.getF_atk());
-                    } else if (j == 9) {
-                        values = Integer.toString(e.getF_def());
-                        // values = Integer.toString(e.getPk());
-                    } else if (j == 10) {
-                        values = Integer.toString(e.getF_hp());
-                    } else if (j == 11) {
-                        values = e.getSet();
-                    } else if (j == 12) {
-                        values = Integer.toString(e.getPk());
+                            if (i == 0) {
+                                e = s.getWeapon();
+                            } else if (i == 1) {
+                                e = s.getHead();
+                                // System.out.println(e.pk+"!");
+                            } else if (i == 2) {
+                                e = s.getChest();
+                            } else if (i == 3) {
+                                e = s.getNeck();
+                            } else if (i == 4) {
+                                e = s.getRing();
+                            } else if (i == 5) {
+                                e = s.getBoot();
+                            }
+
+                            if (j == 0) {
+                                values = Integer.toString(e.getP_atk());
+                            } else if (j == 1) {
+                                values = Integer.toString(e.getP_def());
+                            } else if (j == 2) {
+                                values = Integer.toString(e.getP_hp());
+                            } else if (j == 3) {
+                                values = Integer.toString(e.getC());
+                            } else if (j == 4) {
+                                values = Integer.toString(e.getCd());
+                            } else if (j == 5) {
+                                values = Integer.toString(e.getSpd());
+                            } else if (j == 6) {
+                                values = Integer.toString(e.getEff());
+                            } else if (j == 7) {
+                                values = Integer.toString(e.getEffres());
+                            } else if (j == 8) {
+                                // values = e.getSet();
+                                values = Integer.toString(e.getF_atk());
+                            } else if (j == 9) {
+                                values = Integer.toString(e.getF_def());
+                                // values = Integer.toString(e.getPk());
+                            } else if (j == 10) {
+                                values = Integer.toString(e.getF_hp());
+                            } else if (j == 11) {
+                                values = e.getSet();
+                            } else if (j == 12) {
+                                values = Integer.toString(e.getPk());
+                            }
+                            // System.out.println(rows.get(i)+columns.get(j));
+                            items.get(rows.get(i) + columns.get(j)).setText(values);
+                        }
                     }
-                    // System.out.println(rows.get(i)+columns.get(j));
-                    items.get(rows.get(i) + columns.get(j)).setText(values);
+                    sumCols();
+                    revalidate();
+                    calcHero();
+                    threadCnt++;
                 }
-            }
-            sumCols();
-            revalidate();
-            calcHero();
+            };
+            threadatk.start();
         } else if ("RunSpdCalcs".equals(evt.getActionCommand())) {
-            Sets s = b.superSpeedCalcs(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB());
-            List<String> rows = new ArrayList<String>();
-            Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
-            List<String> columns = new ArrayList<String>();
-            Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
-                    "fdef", "fhp", "set", "pk");
-            Equipment e;
-            String values;
-            for (int i = 0; i < rows.size(); i++) {
-                for (int j = 0; j < columns.size(); j++) {
-                    values = "";
-                    e = null;
+            threadspd = new Thread() {
+                public void run() {
+                    //Sets s = b.superSpeedCalcs(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB());
+                    Sets s = b.superSpeedCalcsv1(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB(),
+                    Double.parseDouble(customAtkTxt.getText()), Double.parseDouble(customHpTxt.getText()),
+                    Double.parseDouble(customCritTxt.getText()), Double.parseDouble(customSpeedTxt.getText()),
+                    Double.parseDouble(customDefTxt.getText()), Double.parseDouble(customEffTxt.getText()),
+                    Double.parseDouble(customCdTxt.getText()),
+                    b.getHeroBag().get(heroCb.getSelectedItem().toString()));
+                    List<String> rows = new ArrayList<String>();
+                    Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
+                    List<String> columns = new ArrayList<String>();
+                    Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
+                            "fdef", "fhp", "set", "pk");
+                    Equipment e;
+                    String values;
+                    for (int i = 0; i < rows.size(); i++) {
+                        for (int j = 0; j < columns.size(); j++) {
+                            values = "";
+                            e = null;
 
-                    if (i == 0) {
-                        e = s.getWeapon();
-                    } else if (i == 1) {
-                        e = s.getHead();
-                    } else if (i == 2) {
-                        e = s.getChest();
-                    } else if (i == 3) {
-                        e = s.getNeck();
-                    } else if (i == 4) {
-                        e = s.getRing();
-                    } else if (i == 5) {
-                        e = s.getBoot();
-                    }
+                            if (i == 0) {
+                                e = s.getWeapon();
+                            } else if (i == 1) {
+                                e = s.getHead();
+                            } else if (i == 2) {
+                                e = s.getChest();
+                            } else if (i == 3) {
+                                e = s.getNeck();
+                            } else if (i == 4) {
+                                e = s.getRing();
+                            } else if (i == 5) {
+                                e = s.getBoot();
+                            }
 
-                    if (j == 0) {
-                        values = Integer.toString(e.getP_atk());
-                    } else if (j == 1) {
-                        values = Integer.toString(e.getP_def());
-                    } else if (j == 2) {
-                        values = Integer.toString(e.getP_hp());
-                    } else if (j == 3) {
-                        values = Integer.toString(e.getC());
-                    } else if (j == 4) {
-                        values = Integer.toString(e.getCd());
-                    } else if (j == 5) {
-                        values = Integer.toString(e.getSpd());
-                    } else if (j == 6) {
-                        values = Integer.toString(e.getEff());
-                    } else if (j == 7) {
-                        values = Integer.toString(e.getEffres());
-                    } else if (j == 8) {
-                        // values = e.getSet();
-                        values = Integer.toString(e.getF_atk());
-                    } else if (j == 9) {
-                        values = Integer.toString(e.getF_def());
-                        // values = Integer.toString(e.getPk());
-                    } else if (j == 10) {
-                        values = Integer.toString(e.getF_hp());
-                    } else if (j == 11) {
-                        values = e.getSet();
-                    } else if (j == 12) {
-                        values = Integer.toString(e.getPk());
+                            if (j == 0) {
+                                values = Integer.toString(e.getP_atk());
+                            } else if (j == 1) {
+                                values = Integer.toString(e.getP_def());
+                            } else if (j == 2) {
+                                values = Integer.toString(e.getP_hp());
+                            } else if (j == 3) {
+                                values = Integer.toString(e.getC());
+                            } else if (j == 4) {
+                                values = Integer.toString(e.getCd());
+                            } else if (j == 5) {
+                                values = Integer.toString(e.getSpd());
+                            } else if (j == 6) {
+                                values = Integer.toString(e.getEff());
+                            } else if (j == 7) {
+                                values = Integer.toString(e.getEffres());
+                            } else if (j == 8) {
+                                // values = e.getSet();
+                                values = Integer.toString(e.getF_atk());
+                            } else if (j == 9) {
+                                values = Integer.toString(e.getF_def());
+                                // values = Integer.toString(e.getPk());
+                            } else if (j == 10) {
+                                values = Integer.toString(e.getF_hp());
+                            } else if (j == 11) {
+                                values = e.getSet();
+                            } else if (j == 12) {
+                                values = Integer.toString(e.getPk());
+                            }
+                            items.get(rows.get(i) + columns.get(j)).setText(values);
+                        }
                     }
-                    items.get(rows.get(i) + columns.get(j)).setText(values);
+                    sumCols();
+                    revalidate();
+                    calcHero();
+                    threadCnt++;
                 }
-            }
-            sumCols();
-            revalidate();
-            calcHero();
+            };
+            threadspd.start();
         } else if ("Wyvern".equals(evt.getActionCommand())) {
-            Sets s = b.superCalcsHunt(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB());
-            List<String> rows = new ArrayList<String>();
-            Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
-            List<String> columns = new ArrayList<String>();
-            Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
-                    "fdef", "fhp", "set", "pk");
-            Equipment e;
-            String values;
-            for (int i = 0; i < rows.size(); i++) {
-                for (int j = 0; j < columns.size(); j++) {
-                    values = "";
-                    e = null;
+            threadwyvern = new Thread() {
+                public void run() {
+                    Sets s = b.superCalcsHunt(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB());
+                    List<String> rows = new ArrayList<String>();
+                    Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
+                    List<String> columns = new ArrayList<String>();
+                    Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
+                            "fdef", "fhp", "set", "pk");
+                    Equipment e;
+                    String values;
+                    for (int i = 0; i < rows.size(); i++) {
+                        for (int j = 0; j < columns.size(); j++) {
+                            values = "";
+                            e = null;
 
-                    if (i == 0) {
-                        e = s.getWeapon();
-                    } else if (i == 1) {
-                        e = s.getHead();
-                    } else if (i == 2) {
-                        e = s.getChest();
-                    } else if (i == 3) {
-                        e = s.getNeck();
-                    } else if (i == 4) {
-                        e = s.getRing();
-                    } else if (i == 5) {
-                        e = s.getBoot();
-                    }
+                            if (i == 0) {
+                                e = s.getWeapon();
+                            } else if (i == 1) {
+                                e = s.getHead();
+                            } else if (i == 2) {
+                                e = s.getChest();
+                            } else if (i == 3) {
+                                e = s.getNeck();
+                            } else if (i == 4) {
+                                e = s.getRing();
+                            } else if (i == 5) {
+                                e = s.getBoot();
+                            }
 
-                    if (j == 0) {
-                        values = Integer.toString(e.getP_atk());
-                    } else if (j == 1) {
-                        values = Integer.toString(e.getP_def());
-                    } else if (j == 2) {
-                        values = Integer.toString(e.getP_hp());
-                    } else if (j == 3) {
-                        values = Integer.toString(e.getC());
-                    } else if (j == 4) {
-                        values = Integer.toString(e.getCd());
-                    } else if (j == 5) {
-                        values = Integer.toString(e.getSpd());
-                    } else if (j == 6) {
-                        values = Integer.toString(e.getEff());
-                    } else if (j == 7) {
-                        values = Integer.toString(e.getEffres());
-                    } else if (j == 8) {
-                        // values = e.getSet();
-                        values = Integer.toString(e.getF_atk());
-                    } else if (j == 9) {
-                        values = Integer.toString(e.getF_def());
-                        // values = Integer.toString(e.getPk());
-                    } else if (j == 10) {
-                        values = Integer.toString(e.getF_hp());
-                    } else if (j == 11) {
-                        values = e.getSet();
-                    } else if (j == 12) {
-                        values = Integer.toString(e.getPk());
+                            if (j == 0) {
+                                values = Integer.toString(e.getP_atk());
+                            } else if (j == 1) {
+                                values = Integer.toString(e.getP_def());
+                            } else if (j == 2) {
+                                values = Integer.toString(e.getP_hp());
+                            } else if (j == 3) {
+                                values = Integer.toString(e.getC());
+                            } else if (j == 4) {
+                                values = Integer.toString(e.getCd());
+                            } else if (j == 5) {
+                                values = Integer.toString(e.getSpd());
+                            } else if (j == 6) {
+                                values = Integer.toString(e.getEff());
+                            } else if (j == 7) {
+                                values = Integer.toString(e.getEffres());
+                            } else if (j == 8) {
+                                // values = e.getSet();
+                                values = Integer.toString(e.getF_atk());
+                            } else if (j == 9) {
+                                values = Integer.toString(e.getF_def());
+                                // values = Integer.toString(e.getPk());
+                            } else if (j == 10) {
+                                values = Integer.toString(e.getF_hp());
+                            } else if (j == 11) {
+                                values = e.getSet();
+                            } else if (j == 12) {
+                                values = Integer.toString(e.getPk());
+                            }
+                            items.get(rows.get(i) + columns.get(j)).setText(values);
+                        }
                     }
-                    items.get(rows.get(i) + columns.get(j)).setText(values);
+                    sumCols();
+                    revalidate();
+                    calcHero();
+                    threadCnt++;
                 }
-            }
-            sumCols();
-            revalidate();
-            calcHero();
+            };
+            threadwyvern.start();
         } else if ("Custom".equals(evt.getActionCommand())) {
-            new Thread() {
+            threadcustom = new Thread() {
                 public void run() {
                     Sets s = b.superCustomCalcs(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB(),
                             Double.parseDouble(customAtkTxt.getText()), Double.parseDouble(customHpTxt.getText()),
@@ -839,142 +659,167 @@ public class gui extends JPanel implements ActionListener {
                     sumCols();
                     revalidate();
                     calcHero();
+                    threadCnt++;
                 }
-            }.start();
+            };
+            
+            threadcustom.start();
+            
         } else if ("Belladona".equals(evt.getActionCommand())) {
-            Sets s = b.superBellaCalcs(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB());
-            List<String> rows = new ArrayList<String>();
-            Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
-            List<String> columns = new ArrayList<String>();
-            Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
-                    "fdef", "fhp", "set", "pk");
-            Equipment e;
-            String values;
-            for (int i = 0; i < rows.size(); i++) {
-                for (int j = 0; j < columns.size(); j++) {
-                    values = "";
-                    e = null;
-
-                    if (i == 0) {
-                        e = s.getWeapon();
-                    } else if (i == 1) {
-                        e = s.getHead();
-                    } else if (i == 2) {
-                        e = s.getChest();
-                    } else if (i == 3) {
-                        e = s.getNeck();
-                    } else if (i == 4) {
-                        e = s.getRing();
-                    } else if (i == 5) {
-                        e = s.getBoot();
+            threadbella = new Thread() {
+                public void run() {
+                    Sets s = b.superBellaCalcsv1(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB(),
+                    b.getHeroBag().get(heroCb.getSelectedItem().toString()));
+        
+                    List<String> rows = new ArrayList<String>();
+                    Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
+                    List<String> columns = new ArrayList<String>();
+                    Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
+                            "fdef", "fhp", "set", "pk");
+                    Equipment e;
+                    String values;
+                    for (int i = 0; i < rows.size(); i++) {
+                        for (int j = 0; j < columns.size(); j++) {
+                            values = "";
+                            e = null;
+        
+                            if (i == 0) {
+                                e = s.getWeapon();
+                            } else if (i == 1) {
+                                e = s.getHead();
+                            } else if (i == 2) {
+                                e = s.getChest();
+                            } else if (i == 3) {
+                                e = s.getNeck();
+                            } else if (i == 4) {
+                                e = s.getRing();
+                            } else if (i == 5) {
+                                e = s.getBoot();
+                            }
+        
+                            if (j == 0) {
+                                values = Integer.toString(e.getP_atk());
+                            } else if (j == 1) {
+                                values = Integer.toString(e.getP_def());
+                            } else if (j == 2) {
+                                values = Integer.toString(e.getP_hp());
+                            } else if (j == 3) {
+                                values = Integer.toString(e.getC());
+                            } else if (j == 4) {
+                                values = Integer.toString(e.getCd());
+                            } else if (j == 5) {
+                                values = Integer.toString(e.getSpd());
+                            } else if (j == 6) {
+                                values = Integer.toString(e.getEff());
+                            } else if (j == 7) {
+                                values = Integer.toString(e.getEffres());
+                            } else if (j == 8) {
+                                //values = e.getSet();
+                                values = Integer.toString(e.getF_atk());
+                            } else if (j == 9) {
+                                values = Integer.toString(e.getF_def());
+                                //values = Integer.toString(e.getPk());
+                            }
+                            else if (j==10){
+                                values = Integer.toString(e.getF_hp());
+                            }
+                            else if (j==11){
+                                values = e.getSet();
+                            }
+                            else if (j==12){
+                                values = Integer.toString(e.getPk());
+                            }
+                            items.get(rows.get(i) + columns.get(j)).setText(values);
+                        }
                     }
-
-                    if (j == 0) {
-                        values = Integer.toString(e.getP_atk());
-                    } else if (j == 1) {
-                        values = Integer.toString(e.getP_def());
-                    } else if (j == 2) {
-                        values = Integer.toString(e.getP_hp());
-                    } else if (j == 3) {
-                        values = Integer.toString(e.getC());
-                    } else if (j == 4) {
-                        values = Integer.toString(e.getCd());
-                    } else if (j == 5) {
-                        values = Integer.toString(e.getSpd());
-                    } else if (j == 6) {
-                        values = Integer.toString(e.getEff());
-                    } else if (j == 7) {
-                        values = Integer.toString(e.getEffres());
-                    } else if (j == 8) {
-                        //values = e.getSet();
-                        values = Integer.toString(e.getF_atk());
-                    } else if (j == 9) {
-                        values = Integer.toString(e.getF_def());
-                        //values = Integer.toString(e.getPk());
-                    }
-                    else if (j==10){
-                        values = Integer.toString(e.getF_hp());
-                    }
-                    else if (j==11){
-                        values = e.getSet();
-                    }
-                    else if (j==12){
-                        values = Integer.toString(e.getPk());
-                    }
-                    items.get(rows.get(i) + columns.get(j)).setText(values);
+                    sumCols();
+                    revalidate();
+                    calcHero();
+                    threadCnt++;
                 }
-            }
-            sumCols();
-            revalidate();
-            calcHero();
-        } else if ("Hp".equals(evt.getActionCommand())) {
-            Sets s = b.superHpCalcs(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB());
-            List<String> rows = new ArrayList<String>();
-            Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
-            List<String> columns = new ArrayList<String>();
-            Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
-                    "fdef", "fhp", "set", "pk");
-            Equipment e;
-            String values;
-            for (int i = 0; i < rows.size(); i++) {
-                for (int j = 0; j < columns.size(); j++) {
-                    values = "";
-                    e = null;
+            };
+            threadbella.start();
+        } 
+        else if ("Hp".equals(evt.getActionCommand())) {
+            threadhp = new Thread() {
+                public void run() {
+                    //Sets s = b.superHpCalcs(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB());
+                    Sets s = b.superHpCalcsv1(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB(),
+                                    Double.parseDouble(customAtkTxt.getText()), Double.parseDouble(customHpTxt.getText()),
+                                    Double.parseDouble(customCritTxt.getText()), Double.parseDouble(customSpeedTxt.getText()),
+                                    Double.parseDouble(customDefTxt.getText()), Double.parseDouble(customEffTxt.getText()),
+                                    Double.parseDouble(customCdTxt.getText()),
+                                    b.getHeroBag().get(heroCb.getSelectedItem().toString()));
+                    List<String> rows = new ArrayList<String>();
+                    Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
+                    List<String> columns = new ArrayList<String>();
+                    Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
+                            "fdef", "fhp", "set", "pk");
+                    Equipment e;
+                    String values;
+                    for (int i = 0; i < rows.size(); i++) {
+                        for (int j = 0; j < columns.size(); j++) {
+                            values = "";
+                            e = null;
 
-                    if (i == 0) {
-                        e = s.getWeapon();
-                    } else if (i == 1) {
-                        e = s.getHead();
-                    } else if (i == 2) {
-                        e = s.getChest();
-                    } else if (i == 3) {
-                        e = s.getNeck();
-                    } else if (i == 4) {
-                        e = s.getRing();
-                    } else if (i == 5) {
-                        e = s.getBoot();
-                    }
+                            if (i == 0) {
+                                e = s.getWeapon();
+                            } else if (i == 1) {
+                                e = s.getHead();
+                            } else if (i == 2) {
+                                e = s.getChest();
+                            } else if (i == 3) {
+                                e = s.getNeck();
+                            } else if (i == 4) {
+                                e = s.getRing();
+                            } else if (i == 5) {
+                                e = s.getBoot();
+                            }
 
-                    if (j == 0) {
-                        values = Integer.toString(e.getP_atk());
-                    } else if (j == 1) {
-                        values = Integer.toString(e.getP_def());
-                    } else if (j == 2) {
-                        values = Integer.toString(e.getP_hp());
-                    } else if (j == 3) {
-                        values = Integer.toString(e.getC());
-                    } else if (j == 4) {
-                        values = Integer.toString(e.getCd());
-                    } else if (j == 5) {
-                        values = Integer.toString(e.getSpd());
-                    } else if (j == 6) {
-                        values = Integer.toString(e.getEff());
-                    } else if (j == 7) {
-                        values = Integer.toString(e.getEffres());
-                    } else if (j == 8) {
-                        //values = e.getSet();
-                        values = Integer.toString(e.getF_atk());
-                    } else if (j == 9) {
-                        values = Integer.toString(e.getF_def());
-                        //values = Integer.toString(e.getPk());
+                            if (j == 0) {
+                                values = Integer.toString(e.getP_atk());
+                            } else if (j == 1) {
+                                values = Integer.toString(e.getP_def());
+                            } else if (j == 2) {
+                                values = Integer.toString(e.getP_hp());
+                            } else if (j == 3) {
+                                values = Integer.toString(e.getC());
+                            } else if (j == 4) {
+                                values = Integer.toString(e.getCd());
+                            } else if (j == 5) {
+                                values = Integer.toString(e.getSpd());
+                            } else if (j == 6) {
+                                values = Integer.toString(e.getEff());
+                            } else if (j == 7) {
+                                values = Integer.toString(e.getEffres());
+                            } else if (j == 8) {
+                                //values = e.getSet();
+                                values = Integer.toString(e.getF_atk());
+                            } else if (j == 9) {
+                                values = Integer.toString(e.getF_def());
+                                //values = Integer.toString(e.getPk());
+                            }
+                            else if (j==10){
+                                values = Integer.toString(e.getF_hp());
+                            }
+                            else if (j==11){
+                                values = e.getSet();
+                            }
+                            else if (j==12){
+                                values = Integer.toString(e.getPk());
+                            }
+                            items.get(rows.get(i) + columns.get(j)).setText(values);
+                        }
                     }
-                    else if (j==10){
-                        values = Integer.toString(e.getF_hp());
-                    }
-                    else if (j==11){
-                        values = e.getSet();
-                    }
-                    else if (j==12){
-                        values = Integer.toString(e.getPk());
-                    }
-                    items.get(rows.get(i) + columns.get(j)).setText(values);
+                    sumCols();
+                    revalidate();
+                    calcHero();
+                    threadCnt++;
                 }
-            }
-            sumCols();
-            revalidate();
-            calcHero();
-
-        } else if ("Reset".equals(evt.getActionCommand())) {
+            };
+            threadhp.start();
+        } 
+        else if ("Reset".equals(evt.getActionCommand())) {
             b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\bag.txt",
                     "C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\herobag.txt", getHandler());
             List<String> rows = new ArrayList<String>();
@@ -986,27 +831,98 @@ public class gui extends JPanel implements ActionListener {
             String values;
             for (int j = 0; j < columns.size(); j++) {
                 for (int i = 0; i < rows.size(); i++) {
-                    items.get(rows.get(i) + columns.get(j)).setText(" ");
+                    items.get(rows.get(i) + columns.get(j)).setText("");
                 }
             }
             for (int j = 0; j < columns.size() - 2; j++) {
-                sumItems.get(columns.get(j)).setText(" ");
+                sumItems.get(columns.get(j)).setText("");
             }
-            // cnt=0;
+            heroAtkTxt.setText("");
+            heroDefTxt.setText(""); 
+            heroHpTxt.setText(""); 
+            heroSpdTxt.setText("");
+            heroCritTxt.setText(""); 
+            heroCdTxt.setText(""); 
+            heroEffTxt.setText(""); 
+            heroEffResTxt.setText("");
+            
             setCnt(0);
+            setCnt2(0);
             history.clear();
+            getFhero().clear();
         }
 
         else if ("XLSX".equals(evt.getActionCommand())) {
-            xlsx = new ExportXLSX(getBag().getSets(), getHistory());
+            xlsx = new ExportXLSX(getBag().getSets(), getHistory(),getFhero());
             xlsx.loadData();
         } else if ("Save".equals(evt.getActionCommand())) {
             saveStuff();
         } else if ("Load".equals(evt.getActionCommand())) {
             loadStuff();
         }
+        else if ("Stop Custom".equals(evt.getActionCommand())) {
+            try{
+                System.out.println(threadCnt);
+                if(getThread("Thread-"+threadCnt)!=null){
+                    getThread("Thread-"+threadCnt++).stop();
+                    //thread1.interrupt();
+                    System.out.println("Thread Stopped"+threadCnt);
+                }
+                
+                repaint();
+
+                b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\bag.txt",
+                    "C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\herobag.txt", getHandler());
+                List<String> rows = new ArrayList<String>();
+                Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
+                List<String> columns = new ArrayList<String>();
+                Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
+                        "fdef", "fhp", "set", "pk");
+                Equipment e;
+                String values;
+                for (int j = 0; j < columns.size(); j++) {
+                    for (int i = 0; i < rows.size(); i++) {
+                        items.get(rows.get(i) + columns.get(j)).setText("");
+                    }
+                }
+                if(sumItems.get(columns.get(0))!=null){
+                    for (int j = 0; j < columns.size() - 2; j++) {
+                        sumItems.get(columns.get(j)).setText("");
+                    }
+                }
+                
+                heroAtkTxt.setText("");
+                heroDefTxt.setText(""); 
+                heroHpTxt.setText(""); 
+                heroSpdTxt.setText("");
+                heroCritTxt.setText(""); 
+                heroCdTxt.setText(""); 
+                heroEffTxt.setText(""); 
+                heroEffResTxt.setText("");
+                
+                setCnt(0);
+                setCnt2(0);
+                history.clear();
+                getFhero().clear();
+            }
+
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }   
 
     }
+    Thread getThread(String t) {
+        ThreadGroup threadGroup = Thread.currentThread( ).getThreadGroup( );
+        Thread[] threads = new Thread[ threadGroup.activeCount() ];
+        threadGroup.enumerate(threads);
+        for (int nIndex=0; nIndex<threads.length; nIndex++) {
+           if(threads[nIndex] != null && threads[nIndex].getName().equals(t)) {
+              return threads[nIndex];
+           }
+        }
+        return null;
+     }
 
     private static void createAndShowGUI() {
         // Create and set up the window.
@@ -1017,12 +933,179 @@ public class gui extends JPanel implements ActionListener {
         frame.add(new gui());
 
         // Display the window.
-        frame.setSize(1000, 500);
+        frame.setSize(1200, 500);
         // frame.pack();
         frame.setVisible(true);
         frame.setResizable(false);
     }
 
+    public void addButtons(){
+        GridBagConstraints c = new GridBagConstraints();
+        setButton = new JButton("Atk Calcs");
+        setButton.setActionCommand("RunCalcs");
+        setButton.addActionListener(this);
+        c.gridx = 0;
+        c.gridy = 6 + 2;
+        add(setButton, c);
+        spdButton = new JButton("Run Speed Calcs");
+        spdButton.setActionCommand("RunSpdCalcs");
+        spdButton.addActionListener(this);
+        c.gridx = 1;
+        c.gridy = 6 + 2;
+        add(spdButton, c);
+
+        wyvernButton = new JButton("Wyvern 13");
+        wyvernButton.setActionCommand("Wyvern");
+        wyvernButton.addActionListener(this);
+        c.gridx = 2;
+        c.gridy = 6 + 2;
+        add(wyvernButton, c);
+
+        critButton = new JButton("Custom Calcs");
+        critButton.setActionCommand("Custom");
+        critButton.addActionListener(this);
+        c.gridx = 3;
+        c.gridy = 6 + 2;
+        add(critButton, c);
+
+        customLabel = new JLabel("Custom Settings:");
+        c.gridx = 5;
+        c.gridy = 6 + 2;
+        add(customLabel, c);
+
+        bellaButton = new JButton("Max Dmg");
+        bellaButton.setActionCommand("Belladona");
+        bellaButton.addActionListener(this);
+        c.gridx = 1;
+        c.gridy = 6 + 3;
+        add(bellaButton, c);
+
+        hpButton = new JButton("Hp Calcs");
+        hpButton.setActionCommand("Hp");
+        hpButton.addActionListener(this);
+        c.gridx = 0;
+        c.gridy = 6 + 3;
+        add(hpButton, c);
+
+        resetButton = new JButton("Reset");
+        resetButton.setActionCommand("Reset");
+        resetButton.addActionListener(this);
+        c.gridx = 1;
+        c.gridy = 6 + 4;
+        add(resetButton, c);
+
+        xlsxButton = new JButton("Export XLSX");
+        xlsxButton.setActionCommand("XLSX");
+        xlsxButton.addActionListener(this);
+        c.gridx = 2;
+        c.gridy = 6 + 4;
+        add(xlsxButton, c);
+
+        saveButton = new JButton("Save");
+        saveButton.setActionCommand("Save");
+        saveButton.addActionListener(this);
+        c.gridx = 3;
+        c.gridy = 6 + 3;
+        add(saveButton, c);
+
+        loadButton = new JButton("Load");
+        loadButton.setActionCommand("Load");
+        loadButton.addActionListener(this);
+        c.gridx = 3;
+        c.gridy = 6 + 4;
+        add(loadButton, c);
+
+        stopButton = new JButton("Stop Execution");
+        stopButton.setActionCommand("Stop Custom");
+        stopButton.addActionListener(this);
+        c.gridx = 3;
+        c.gridy = 6 + 5;
+        add(stopButton, c);
+        // customAtkLabel, customHpLabel, customCritLabel,customSpeedLabel,
+        // customDefLabel;
+        customAtkLabel = new JLabel("atk:");
+        c.gridx = 4;
+        c.gridy = 6 + 3;
+        add(customAtkLabel, c);
+        customAtkTxt = new JTextField("0");
+        customAtkTxt.setMinimumSize(new Dimension(80, 20 ));
+        customAtkTxt.setPreferredSize(new Dimension(80, 20 ));
+        c.gridx = 5;
+        c.gridy = 6 + 3;
+        add(customAtkTxt, c);
+
+        customHpLabel = new JLabel("hp:");
+        c.gridx = 4;
+        c.gridy = 6 + 4;
+        add(customHpLabel, c);
+        customHpTxt = new JTextField("0");
+        customHpTxt.setMinimumSize(new Dimension(80, 20 ));
+        customHpTxt.setPreferredSize(new Dimension(80, 20 ));
+
+        c.gridx = 5;
+        c.gridy = 6 + 4;
+        add(customHpTxt, c);
+
+        customCritLabel = new JLabel("crit chance:");
+        c.gridx = 6;
+        c.gridy = 6 + 3;
+        add(customCritLabel, c);
+        customCritTxt = new JTextField("0");
+        customCritTxt.setMinimumSize(new Dimension(80, 20 ));
+        customCritTxt.setPreferredSize(new Dimension(80, 20 ));
+
+        c.gridx = 7;
+        c.gridy = 6 + 3;
+        add(customCritTxt, c);
+
+        customSpeedLabel = new JLabel("speed:");
+        c.gridx = 6;
+        c.gridy = 6 + 4;
+        add(customSpeedLabel, c);
+        customSpeedTxt = new JTextField("0");
+        customSpeedTxt.setMinimumSize(new Dimension(80, 20 ));
+        customSpeedTxt.setPreferredSize(new Dimension(80, 20 ));
+
+        c.gridx = 7;
+        c.gridy = 6 + 4;
+        add(customSpeedTxt, c);
+
+        customDefLabel = new JLabel("def:");
+        c.gridx = 8;
+        c.gridy = 6 + 3;
+        add(customDefLabel, c);
+        customDefTxt = new JTextField("0");
+        customDefTxt.setMinimumSize(new Dimension(80, 20 ));
+        customDefTxt.setPreferredSize(new Dimension(80, 20 ));
+
+        c.gridx = 9;
+        c.gridy = 6 + 3;
+        add(customDefTxt, c);
+
+        customEffLabel = new JLabel("eff:");
+        c.gridx = 10;
+        c.gridy = 6 + 3;
+        add(customEffLabel, c);
+        customEffTxt = new JTextField("0");
+        customEffTxt.setMinimumSize(new Dimension(80, 20 ));
+        customEffTxt.setPreferredSize(new Dimension(80, 20 ));
+
+        c.gridx = 11;
+        c.gridy = 6 + 3;
+        add(customEffTxt, c);
+
+        customCdLabel = new JLabel("crit dmg:");
+        c.gridx = 8;
+        c.gridy = 6 + 4;
+        add(customCdLabel, c);
+        customCdTxt = new JTextField("0");
+        customCdTxt.setMinimumSize(new Dimension(80, 20 ));
+        customCdTxt.setPreferredSize(new Dimension(80, 20 ));
+
+        c.gridx = 9;
+        c.gridy = 6 + 4;
+        add(customCdTxt, c);
+    }
     public void addLabels() {
         // add components to panel
         GridBagConstraints c = new GridBagConstraints();
@@ -1154,6 +1237,120 @@ public class gui extends JPanel implements ActionListener {
         c.gridy = 7;
         c.fill = GridBagConstraints.HORIZONTAL;
         add(total, c);
+
+    }
+
+    public void addHeros(){
+        GridBagConstraints c = new GridBagConstraints();
+        String[] heros = new String[b.getHeroBag().size()];
+        Iterator hmIterator = b.getHeroBag().entrySet().iterator();
+        int tmpcnt = 0;
+        while (hmIterator.hasNext()) {
+            Map.Entry mapElement = (Map.Entry) hmIterator.next();
+            Hero h = (Hero) mapElement.getValue();
+
+            System.out.println(mapElement.getKey() + " : " + h.getName());
+            heros[tmpcnt] = (String) mapElement.getKey();
+            tmpcnt++;
+        }
+
+        heroCb = new JComboBox<String>(heros);
+        heroCb.setMinimumSize(heroCb.getPreferredSize());
+        c.gridx = 0;
+        c.gridy = 6 + 5;
+        add(heroCb, c);
+
+        // Hero Stats
+        heroAtkLabel = new JLabel("atk:");
+        c.gridx = 0;
+        c.gridy = 6 + 6;
+        add(heroAtkLabel, c);
+        heroAtkTxt = new JTextField("0");
+        heroAtkTxt.setMinimumSize(new Dimension( 80, 20 ));
+        heroAtkTxt.setPreferredSize(new Dimension( 80, 20 ));
+
+        c.gridx = 1;
+        c.gridy = 6 + 6;
+        add(heroAtkTxt, c);
+        heroDefLabel = new JLabel("def:");
+        c.gridx = 0;
+        c.gridy = 6 + 7;
+        add(heroDefLabel, c);
+        heroDefTxt = new JTextField("0");
+        heroDefTxt.setMinimumSize(new Dimension( 80, 20 ));
+        heroDefTxt.setPreferredSize(new Dimension( 80, 20 ));
+
+        c.gridx = 1;
+        c.gridy = 6 + 7;
+        add(heroDefTxt, c);
+        heroHpLabel = new JLabel("hp:");
+        c.gridx = 0;
+        c.gridy = 6 + 8;
+        add(heroHpLabel, c);
+        heroHpTxt = new JTextField("0");
+        heroHpTxt.setMinimumSize(new Dimension( 80, 20 ));
+        heroHpTxt.setPreferredSize(new Dimension( 80, 20 ));
+
+        c.gridx = 1;
+        c.gridy = 6 + 8;
+        add(heroHpTxt, c);
+        heroSpdLabel = new JLabel("speed:");
+        c.gridx = 0;
+        c.gridy = 6 + 9;
+        add(heroSpdLabel, c);
+        heroSpdTxt = new JTextField("0");
+        heroSpdTxt.setMinimumSize(new Dimension( 80, 20 ));
+        heroSpdTxt.setPreferredSize(new Dimension( 80, 20 ));
+
+        c.gridx = 1;
+        c.gridy = 6 + 9;
+        add(heroSpdTxt, c);
+
+        heroCritLabel = new JLabel("crit:");
+        c.gridx = 2;
+        c.gridy = 6 + 6;
+        add(heroCritLabel, c);
+        heroCritTxt = new JTextField("0");
+        heroCritTxt.setMinimumSize(new Dimension( 80, 20 ));
+        heroCritTxt.setPreferredSize(new Dimension( 80, 20 ));
+
+        c.gridx = 3;
+        c.gridy = 6 + 6;
+        add(heroCritTxt, c);
+        heroCdLabel = new JLabel("crit dmg:");
+        c.gridx = 2;
+        c.gridy = 6 + 7;
+        add(heroCdLabel, c);
+        heroCdTxt = new JTextField("0");
+        heroCdTxt.setMinimumSize(new Dimension( 80, 20 ));
+        heroCdTxt.setPreferredSize(new Dimension( 80, 20 ));
+
+        c.gridx = 3;
+        c.gridy = 6 + 7;
+        add(heroCdTxt, c);
+        heroEffLabel = new JLabel("eff:");
+        c.gridx = 2;
+        c.gridy = 6 + 8;
+        add(heroEffLabel, c);
+        heroEffTxt = new JTextField("0");
+        heroEffTxt.setMinimumSize(new Dimension(80, 20 ));
+        heroEffTxt.setPreferredSize(new Dimension( 80, 20 ));
+
+        c.gridx = 3;
+        c.gridy = 6 + 8;
+        add(heroEffTxt, c);
+        heroEffResLabel = new JLabel("eff res:");
+        c.gridx = 2;
+        c.gridy = 6 + 9;
+        add(heroEffResLabel, c);
+        heroEffResTxt = new JTextField("0");
+        heroEffResTxt.setMinimumSize(new Dimension( 80, 20 ));
+        heroEffResTxt.setPreferredSize(new Dimension( 80, 20 ));
+
+        c.gridx = 3;
+        c.gridy = 6 + 9;
+        add(heroEffResTxt, c);
+
     }
 
     public Bag getBag() {
@@ -1170,6 +1367,18 @@ public class gui extends JPanel implements ActionListener {
 
     public Handler getHandler() {
         return this.h;
+    }
+
+    public Map<Integer, FinalHero> getFhero() {
+        return this.fhero;
+    }
+
+    public int getCnt2(){
+        return this.cnt2;
+    }
+    
+    public void setCnt2(int cnt2){
+        this.cnt2 = cnt2;
     }
 
     public static void main(String[] args) {

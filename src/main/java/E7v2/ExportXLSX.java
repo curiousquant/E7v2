@@ -4,10 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.JTextField;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -19,9 +18,11 @@ public class ExportXLSX {
     Map<String,Double> history;
     XSSFSheet sheet;
     XSSFWorkbook workbook;
-    public ExportXLSX(ArrayList<Sets> s, Map<String,Double> history){
+    Map<Integer,FinalHero> fhero;
+    public ExportXLSX(ArrayList<Sets> s, Map<String,Double> history,Map<Integer,FinalHero> fhero){
         this.s = s;
         this.history = history;
+        this.fhero = fhero;
         workbook = new XSSFWorkbook(); 
         sheet = workbook.createSheet("Sheet1"); 
     }
@@ -34,6 +35,7 @@ public class ExportXLSX {
         //add headers
         Cell first_cell;
         Row first_row = sheet.createRow(rownum++);
+
         first_cell = first_row.createCell(1); 
         first_cell.setCellValue("p atk");
         first_cell = first_row.createCell(2); 
@@ -164,9 +166,39 @@ public class ExportXLSX {
                       
             }
         }
-            Row r1 = sheet.createRow(rownum++);
-            first_cell = r1.createCell(0); 
-            first_cell.setCellValue("-------------------------------------------------------------------------------------------------------------------------------");
+           
+            Row row1 = sheet.createRow(rownum++);
+            List<String> columns = new ArrayList<String>();                                
+                    Collections.addAll(columns,"atk","def","hp","speed","crit","crit dmg","eff","effres");
+            for(int k=0;k<columns.size();k++){
+                Cell cell = row1.createCell(k+1);
+                cell.setCellValue(columns.get(k));
+            }
+            Row row2 = sheet.createRow(rownum++);
+            Cell cell = row2.createCell(0);
+            cell.setCellValue(getFhero().get(i).getName());
+            cell = row2.createCell(1);
+            cell.setCellValue(getFhero().get(i).getAtk());
+            cell = row2.createCell(2);
+            cell.setCellValue(getFhero().get(i).getDef());
+            cell = row2.createCell(3);
+            cell.setCellValue(getFhero().get(i).getHp());
+            cell = row2.createCell(4);
+            cell.setCellValue(getFhero().get(i).getSpd());
+            cell = row2.createCell(5);
+            cell.setCellValue(getFhero().get(i).getCrit());
+            cell = row2.createCell(6);
+            cell.setCellValue(getFhero().get(i).getCd());
+            cell = row2.createCell(7);
+            cell.setCellValue(getFhero().get(i).getEff());
+            cell = row2.createCell(8);
+            cell.setCellValue(getFhero().get(i).getEffres());
+
+
+
+        Row r1 = sheet.createRow(rownum++);
+        first_cell = r1.createCell(1); 
+        first_cell.setCellValue("-------------------------------------------------------------------------------------------------------------------------------");
 
         }
         
@@ -194,5 +226,10 @@ public class ExportXLSX {
     public Map<String,Double> getHistory(){
         return this.history;
     }
+
+    public Map<Integer,FinalHero> getFhero() {
+        return this.fhero;
+    }
+
 
 }
