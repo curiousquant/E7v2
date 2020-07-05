@@ -31,11 +31,11 @@ import javax.swing.JTextField;
 public class gui extends JPanel implements ActionListener {
     protected JTextField f, weapon, head, chest, neck, ring, boot, customAtkTxt, customHpTxt, customCritTxt,
             customSpeedTxt, customDefTxt, customEffTxt, customCdTxt, heroAtkTxt, heroDefTxt, heroHpTxt, heroSpdTxt,
-            heroCritTxt, heroCdTxt, heroEffTxt, heroEffResTxt;
+            heroCritTxt, heroCdTxt, heroEffTxt, heroEffResTxt, cvTxt;
     protected JTextArea a;
     protected JLabel customAtkLabel, customHpLabel, customCritLabel, customSpeedLabel, customDefLabel, customEffLabel,
             customCdLabel, customLabel, heroAtkLabel, heroDefLabel, heroHpLabel, heroSpdLabel, heroCritLabel,
-            heroCdLabel, heroEffLabel, heroEffResLabel;;
+            heroCdLabel, heroEffLabel, heroEffResLabel, cvLabel;
     JButton button;
     private JLabel lweapon, lhead, lchest, lneck, lring, lboot, total;
     private JLabel patk, pdef, php, pcrit, pcritdmg, speed, eff, effres, fatk,fdef,fhp,set, pk;
@@ -234,8 +234,8 @@ public class gui extends JPanel implements ActionListener {
 
         heroEffResTxt.setText(String.valueOf(
                 Math.floor(selectedHero.getEffres() + (Double.parseDouble(sumItems.get(columns.get(7)).getText())))));
-        System.out.println(selectedHero.getEff());
-
+        //System.out.println(selectedHero.getEff());
+        
         getFhero().put(getCnt2(),new FinalHero(selectedHero.getName(),Double.parseDouble(heroAtkTxt.getText()),
                                 Double.parseDouble(heroDefTxt.getText()),
                                 Double.parseDouble(heroHpTxt.getText()),Double.parseDouble(heroSpdTxt.getText()),
@@ -670,7 +670,8 @@ public class gui extends JPanel implements ActionListener {
                 public void run() {
                     Sets s = b.superBellaCalcsv1(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB(),
                     b.getHeroBag().get(heroCb.getSelectedItem().toString()));
-        
+                    //double cv =b.getHeroBag().get(heroCb.getSelectedItem().toString()).getCv();
+                    
                     List<String> rows = new ArrayList<String>();
                     Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
                     List<String> columns = new ArrayList<String>();
@@ -735,6 +736,7 @@ public class gui extends JPanel implements ActionListener {
                     sumCols();
                     revalidate();
                     calcHero();
+                    cvTxt.setText(String.valueOf(s.getCV()));
                     threadCnt++;
                 }
             };
@@ -834,8 +836,10 @@ public class gui extends JPanel implements ActionListener {
                     items.get(rows.get(i) + columns.get(j)).setText("");
                 }
             }
-            for (int j = 0; j < columns.size() - 2; j++) {
-                sumItems.get(columns.get(j)).setText("");
+            if(getCnt2()>0){
+                for (int j = 0; j < columns.size() - 2; j++) {
+                    sumItems.get(columns.get(j)).setText("");
+                }
             }
             heroAtkTxt.setText("");
             heroDefTxt.setText(""); 
@@ -845,7 +849,8 @@ public class gui extends JPanel implements ActionListener {
             heroCdTxt.setText(""); 
             heroEffTxt.setText(""); 
             heroEffResTxt.setText("");
-            
+            cvTxt.setText("");
+
             setCnt(0);
             setCnt2(0);
             history.clear();
@@ -899,7 +904,8 @@ public class gui extends JPanel implements ActionListener {
                 heroCdTxt.setText(""); 
                 heroEffTxt.setText(""); 
                 heroEffResTxt.setText("");
-                
+                cvTxt.setText("");
+
                 setCnt(0);
                 setCnt2(0);
                 history.clear();
@@ -910,7 +916,14 @@ public class gui extends JPanel implements ActionListener {
                 e.printStackTrace();
             }
         }   
+        else if ("Dropdown".equals(evt.getActionCommand())) {
+            if(getCnt2()>0){
+                getFhero().remove(getCnt2());
+                cnt2--;
+                calcHero();
+            }
 
+        }
     }
     Thread getThread(String t) {
         ThreadGroup threadGroup = Thread.currentThread( ).getThreadGroup( );
@@ -926,7 +939,7 @@ public class gui extends JPanel implements ActionListener {
 
     private static void createAndShowGUI() {
         // Create and set up the window.
-        JFrame frame = new JFrame("E7");
+        JFrame frame = new JFrame("E7 Optimizer");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Add contents to the window.
@@ -990,8 +1003,8 @@ public class gui extends JPanel implements ActionListener {
         resetButton = new JButton("Reset");
         resetButton.setActionCommand("Reset");
         resetButton.addActionListener(this);
-        c.gridx = 1;
-        c.gridy = 6 + 4;
+        c.gridx = 2;
+        c.gridy = 6 + 3;
         add(resetButton, c);
 
         xlsxButton = new JButton("Export XLSX");
@@ -1259,6 +1272,9 @@ public class gui extends JPanel implements ActionListener {
         c.gridx = 0;
         c.gridy = 6 + 5;
         add(heroCb, c);
+        heroCb.setActionCommand("Dropdown");
+        heroCb.addActionListener(this);
+        
 
         // Hero Stats
         heroAtkLabel = new JLabel("atk:");
@@ -1351,6 +1367,16 @@ public class gui extends JPanel implements ActionListener {
         c.gridy = 6 + 9;
         add(heroEffResTxt, c);
 
+        cvLabel = new JLabel("cv:");
+        c.gridx = 2;
+        c.gridy = 6 + 10;
+        add(cvLabel, c);
+        cvTxt = new JTextField("0");
+        cvTxt.setMinimumSize(new Dimension( 80, 20 ));
+        cvTxt.setPreferredSize(new Dimension( 80, 20 ));
+        c.gridx = 3;
+        c.gridy = 6 + 10;
+        add(cvTxt, c);
     }
 
     public Bag getBag() {

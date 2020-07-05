@@ -14,6 +14,7 @@ public class Bag {
     private int ncnt = 0;
     private int rcnt = 0;
     private int cntbar;
+    private double CV;
     private int maxw = 0, maxb = 0, maxc = 0, maxh = 0, maxn = 0, maxr = 0;
     Handler handler;
     ArrayList<Equipment> w = new ArrayList<>();
@@ -162,7 +163,7 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
         getSets().add(s);
         return s;
     }
@@ -182,7 +183,9 @@ public class Bag {
 
 
         double maxdmg = 0;
-        double dmg = 0;
+        double dmg = 0,dmg2=0;
+        double vars = 0;
+        double minvars = 1000000000;
         double atk = 0,fatk=0;
         double crit = 0;
         double dest = 0;
@@ -282,10 +285,13 @@ public class Bag {
                                 dest = dest + herocd;
 
                                 dmg = atk*(1-crit/100)+atk*(crit/100)*(1+dest/100);
-
-                                if (dmg>maxdmg) {
+                                dmg2 = (Math.pow(atk,2))*(1-crit/100)+(Math.pow(atk*(1+dest/100),2))*(crit/100);
+                                vars = dmg2 - Math.pow(dmg,2);
+                                //System.out.println(vars);
+                                if (dmg>maxdmg && vars<minvars && vars>0) {
                                     maxdmg=dmg;
-                                    //System.out.println(atk);  
+                                    minvars=vars;
+                                    //System.out.println(minvars);  
                                     maxW = w.get(i);
                                     maxR = r.get(j);
                                     maxN = n.get(k);
@@ -299,6 +305,8 @@ public class Bag {
                                     setMaxh(l);
                                     setMaxc(m);
                                     setMaxb(n1);
+
+                                    setCV(maxdmg/Math.sqrt(minvars));
                                 }
                             }
 
@@ -307,7 +315,7 @@ public class Bag {
                 }
             }
         }
-
+        System.out.println(getCV());
         System.out.println("dmg score: " + maxdmg);
         System.out.println("    weapon id: " + maxW.getPk());
         System.out.println("        atk: " + maxW.getP_atk() + " spd: " + maxW.getSpd() + " crit: " + maxW.getC()
@@ -340,7 +348,7 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,getCV());
         getSets().add(s);
         return s;
     }
@@ -447,7 +455,7 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
         getSets().add(s);
         return s;
     }
@@ -723,7 +731,7 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
         getSets().add(s);
         return s;
     }
@@ -843,7 +851,7 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
         getSets().add(s);
         return s;
     }
@@ -962,7 +970,7 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
         getSets().add(s);
         return s;
     }
@@ -1105,7 +1113,7 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
         getSets().add(s);
         return s;
     }
@@ -1217,7 +1225,7 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
         getSets().add(s);
         return s;
     }
@@ -1392,7 +1400,7 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
         getSets().add(s);
         return s;
     }
@@ -1496,7 +1504,7 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
         getSets().add(s);
         return s;
     }
@@ -1794,6 +1802,14 @@ public class Bag {
 
     public void setRcnt(int rcnt) {
         this.rcnt = rcnt;
+    }
+
+    public double getCV() {
+        return this.CV;
+    }
+
+    public void setCV(double CV) {
+        this.CV = CV;
     }
 
 }

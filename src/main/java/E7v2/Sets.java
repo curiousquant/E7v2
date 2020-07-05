@@ -1,13 +1,15 @@
 package E7v2;
 public class Sets {
+    double CV;
     Equipment weapon, head, chest, neck, ring, boot;
-    public Sets(Equipment weapon,Equipment head,Equipment chest,Equipment neck,Equipment ring,Equipment boot){
+    public Sets(Equipment weapon,Equipment head,Equipment chest,Equipment neck,Equipment ring,Equipment boot,double CV){
         this.weapon = weapon;
         this.head = head;
         this.chest = chest;
         this.neck = neck;
         this.ring = ring;
         this.boot = boot;
+        this.CV = CV;
     }
 
     public Equipment getWeapon() {
@@ -56,6 +58,15 @@ public class Sets {
 
     public void setBoot(Equipment boot) {
         this.boot = boot;
+    }
+    
+
+    public double getCV() {
+        return this.CV;
+    }
+
+    public void setCV(double CV) {
+        this.CV = CV;
     }
     
 }

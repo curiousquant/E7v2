@@ -3,6 +3,7 @@ package E7v2;
 public class Hero {
     String name;
     int atk, def, hp, spd, crit, critdmg, eff, effres;
+    double cv;
     Handler h;
     public Hero(String name,int atk, int def, int hp, int spd, int crit, int critdmg, int eff, int effres){
         this.name = name;
@@ -97,6 +98,4 @@ public class Hero {
     }
 
 
-
-    
 }
