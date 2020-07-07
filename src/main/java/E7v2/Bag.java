@@ -27,14 +27,15 @@ public class Bag {
     HashMap<String,Hero> heroBag = new HashMap<>();
 
     ArrayList<Sets> sets = new ArrayList<>();
-
+    
     public Bag(String path, String heroPath, Handler handler) {
         loadInventory(path);
         loadHeros(heroPath);
         this.handler = handler;
+        
     }
 
-    public Sets superCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+    public synchronized  Sets superCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b) {
         Equipment maxW = w.get(0);
         Equipment maxR = r.get(0);
@@ -42,7 +43,7 @@ public class Bag {
         Equipment maxH = h.get(0);
         Equipment maxCH = ch.get(0);
         Equipment maxB = b.get(0);
-        int cntbar = 1;
+        int cntbar = 0;
         double maxatk = 0;
         double atk = 0;
         for (int i = 0; i < wcnt; i++) {
@@ -163,12 +164,12 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
         getSets().add(s);
         return s;
     }
     
-    public Sets superBellaCalcsv1(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+    public synchronized  Sets superBellaCalcsv1(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Hero hero) {
         Equipment maxW = w.get(0);
         Equipment maxR = r.get(0);
@@ -189,7 +190,7 @@ public class Bag {
         double atk = 0,fatk=0;
         double crit = 0;
         double dest = 0;
-        cntbar = 1;
+        cntbar = 0;
         // wcnt=5;
         // rcnt=5;
         // ncnt=5;
@@ -285,12 +286,12 @@ public class Bag {
                                 dest = dest + herocd;
 
                                 dmg = atk*(1-crit/100)+atk*(crit/100)*(1+dest/100);
-                                dmg2 = (Math.pow(atk,2))*(1-crit/100)+(Math.pow(atk*(1+dest/100),2))*(crit/100);
-                                vars = dmg2 - Math.pow(dmg,2);
+                                //dmg2 = (Math.pow(atk,2))*(1-crit/100)+(Math.pow(atk*(1+dest/100),2))*(crit/100);
+                                //vars = dmg2 - Math.pow(dmg,2);
                                 //System.out.println(vars);
-                                if (dmg>maxdmg && vars<minvars && vars>0) {
+                                if (dmg>maxdmg ) {
                                     maxdmg=dmg;
-                                    minvars=vars;
+                                    //minvars=vars;
                                     //System.out.println(minvars);  
                                     maxW = w.get(i);
                                     maxR = r.get(j);
@@ -306,7 +307,7 @@ public class Bag {
                                     setMaxc(m);
                                     setMaxb(n1);
 
-                                    setCV(maxdmg/Math.sqrt(minvars));
+                                    //setCV(Math.sqrt(minvars));
                                 }
                             }
 
@@ -348,12 +349,12 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,getCV());
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
         getSets().add(s);
         return s;
     }
 
-    public Sets superBellaCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+    public synchronized  Sets superBellaCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b) {
         Equipment maxW = w.get(0);
         Equipment maxR = r.get(0);
@@ -362,7 +363,7 @@ public class Bag {
         Equipment maxCH = ch.get(0);
         Equipment maxB = b.get(0);
 
-        int cntbar = 1;
+        int cntbar = 0;
         double maxatk = 0;
         double atk = 0;
         for (int i = 0; i < wcnt; i++) {
@@ -422,7 +423,7 @@ public class Bag {
                 }
             }
         }
-
+        
         System.out.println("atk score: " + maxatk);
         System.out.println("    weapon id: " + maxW.getPk());
         System.out.println("        atk: " + maxW.getP_atk() + " spd: " + maxW.getSpd() + " crit: " + maxW.getC()
@@ -455,15 +456,17 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
         getSets().add(s);
+        
+
         return s;
     }
 
     // Double.parseDouble(customAtkTxt.getText()),Double.parseDouble(customHpTxt.getText()),
     // Double.parseDouble(customCritTxt.getText()),Double.parseDouble(customSpeedTxt.getText()),
     // Double.parseDouble(customDefTxt.getText()))
-    public Sets superCustomCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+    public synchronized  Sets superCustomCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Double catk, Double chp,
             Double cCrit, Double cSpeed, Double cDef, Double cEff, Double cCd, Hero hero) {
         Equipment maxW = w.get(0);
@@ -498,7 +501,7 @@ public class Bag {
         double hp = 0,fhp=0;
         double def = 0,fdef=0;
         double dest = 0;
-        cntbar = 1;
+        cntbar = 0;
         // wcnt=5;
         // rcnt=5;
         // ncnt=5;
@@ -698,7 +701,7 @@ public class Bag {
                 }
             }
         }
-
+        
         System.out.println("atk score: " + maxatk);
         System.out.println("    weapon id: " + maxW.getPk());
         System.out.println("        atk: " + maxW.getP_atk() + " spd: " + maxW.getSpd() + " crit: " + maxW.getC()
@@ -731,12 +734,12 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
         getSets().add(s);
         return s;
     }
 
-    public Sets superMaxAtkCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+    public synchronized  Sets superMaxAtkCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Double catk, Double chp,
             Double cCrit, Double cSpeed, Double cDef, Double cEff, Double cCd, Hero hero) {
         Equipment maxW = w.get(0);
@@ -751,7 +754,7 @@ public class Bag {
         double maxatk = 0;
         double atk = 0,fatk=0;
 
-        cntbar = 1;
+        cntbar = 0;
 
         for (int i = 0; i < wcnt; i++) {
             handler.getG().drawProgress(Math.ceil(400 * ((double) cntbar / (wcnt))));
@@ -851,12 +854,12 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
         getSets().add(s);
         return s;
     }
 
-    public Sets superSpeedCalcsv1(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+    public synchronized  Sets superSpeedCalcsv1(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Double catk, Double chp,
             Double cCrit, Double cSpeed, Double cDef, Double cEff, Double cCd, Hero hero) {
         Equipment maxW = w.get(0);
@@ -871,7 +874,7 @@ public class Bag {
         double maxspd = 0;
         double spd = 0;
 
-        cntbar = 1;
+        cntbar = 0;
         // wcnt=5;
         // rcnt=5;
         // ncnt=5;
@@ -970,13 +973,13 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
         getSets().add(s);
         return s;
     }
 
 
-    public Sets superHpCalcsv1(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+    public synchronized  Sets superHpCalcsv1(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Double catk, Double chp,
             Double cCrit, Double cSpeed, Double cDef, Double cEff, Double cCd, Hero hero) {
         Equipment maxW = w.get(0);
@@ -997,7 +1000,7 @@ public class Bag {
         double def = 0;
         double fdef = 0;
 
-        cntbar = 1;
+        cntbar = 0;
 
 
         for (int i = 0; i < wcnt; i++) {
@@ -1113,11 +1116,11 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
         getSets().add(s);
         return s;
     }
-    public Sets superHpCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+    public synchronized  Sets superHpCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b) {
         Equipment maxW = w.get(0);
         Equipment maxR = r.get(0);
@@ -1126,7 +1129,7 @@ public class Bag {
         Equipment maxCH = ch.get(0);
         Equipment maxB = b.get(0);
 
-        int cntbar = 1;
+        int cntbar = 0;
         double maxhp = 0;
         double hp = 0;
         for (int i = 0; i < wcnt; i++) {
@@ -1225,12 +1228,12 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
         getSets().add(s);
         return s;
     }
 
-    public Sets superCalcsHunt(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+    public synchronized  Sets superCalcsHunt(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b) {
         Equipment maxW = w.get(0);
         Equipment maxR = r.get(0);
@@ -1243,7 +1246,7 @@ public class Bag {
         double atk = 0;
         double spd = 0;
         double maxspd = 0;
-        int cntbar = 1;
+        int cntbar = 0;
         for (int i = 0; i < wcnt; i++) {
             handler.getG().drawProgress(Math.ceil(400 * ((double) cntbar / (wcnt))));
             //System.out.println(Math.ceil(400 * ((double) cntbar / (wcnt))));
@@ -1367,6 +1370,7 @@ public class Bag {
                 }
             }
         }
+
         System.out.println("atk score: " + maxatk);
         System.out.println("spd score: " + maxspd);
         System.out.println("    weapon id: " + maxW.getPk());
@@ -1400,12 +1404,13 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
         getSets().add(s);
+        System.out.println(getSets().size());
         return s;
     }
 
-    public Sets superSpeedCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+    public synchronized  Sets superSpeedCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b) {
         Equipment maxW = w.get(0);
         Equipment maxR = r.get(0);
@@ -1413,7 +1418,7 @@ public class Bag {
         Equipment maxH = h.get(0);
         Equipment maxCH = ch.get(0);
         Equipment maxB = b.get(0);
-        int cntbar = 1;
+        int cntbar = 0;
         double maxspd = 0;
         double spd = 0;
         for (int i = 0; i < wcnt; i++) {
@@ -1472,6 +1477,7 @@ public class Bag {
                 }
             }
         }
+
         System.out.println("spd score: " + maxspd);
         System.out.println("    weapon id: " + maxW.getPk());
         System.out.println("        atk: " + maxW.getP_atk() + " spd: " + maxW.getSpd() + " crit: " + maxW.getC()
@@ -1504,12 +1510,12 @@ public class Bag {
         hcnt--;
         ncnt--;
         rcnt--;
-        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB,0);
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
         getSets().add(s);
         return s;
     }
 
-    public void calcScore() {
+    public synchronized  void calcScore() {
         for (int i = 0; i < wcnt; i++) {
             w.get(i).atk_score();
         }
@@ -1564,7 +1570,7 @@ public class Bag {
         }
     }
 
-    private void loadInventory(String path) {
+    private synchronized  void loadInventory(String path) {
 
         String file = Utils.loadFileAsString(path);
         String[] token = file.split("\\s+");

@@ -1,0 +1,8 @@
+A.Ras,Run Speed Calcs
+S.Angelica,Run Speed Calcs
+Kayron,Max Dmg
+SSB,Max Dmg
+Sigret,Wyvern 13
+Alencia,Hp Calcs
+Roana,Hp Calcs
+Roana,Export XLSX
