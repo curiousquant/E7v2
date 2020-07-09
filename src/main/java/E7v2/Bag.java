@@ -168,7 +168,279 @@ public class Bag {
         getSets().add(s);
         return s;
     }
-    
+
+
+
+    public synchronized  Sets superBellaCalcsv2(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+            ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Hero hero) {
+        Equipment maxW = w.get(0);
+        Equipment maxR = r.get(0);
+        Equipment maxN = n.get(0);
+        Equipment maxH = h.get(0);
+        Equipment maxCH = ch.get(0);
+        Equipment maxB = b.get(0);
+
+        int heroatk = hero.getAtk();
+        int herocrit = hero.getCrit();
+        int herocd = hero.getCritdmg();
+        int herodef = hero.getDef();
+        int herohp = hero.getHp();
+        int herospd = hero.getSpd();
+        int heroeff = hero.getEff();
+        
+        double maxdmg = 0;
+        double maxatk = 0;
+        double maxhp = 0;
+        double maxdef = 0;
+        
+        double dmg = 0,dmg2=0;
+        double vars = 0;
+        double minvars = 1000000000;
+        double atk = 0,fatk=0;
+        double spd = 0;
+        double hp = 0,fhp=0;
+        double def = 0,fdef=0;
+
+        double crit = 0;
+        double dest = 0;
+        double eff = 0;
+        cntbar = 0;
+        // wcnt=5;
+        // rcnt=5;
+        // ncnt=5;
+        // hcnt=5;
+        // cnnt=5;
+        // bcnt=5;
+
+        for (int i = 0; i < wcnt; i++) {
+            handler.getG().drawProgress(Math.ceil(400 * ((double) cntbar / (wcnt))));
+            //System.out.println(Math.ceil(400 * ((double) cntbar / (wcnt))));
+            // handler.getG().drawProgress2(cntbar);
+
+            cntbar++;
+            // progressBar.setText(Integer.toString(getCntBar()));;
+
+            for (int j = 0; j < rcnt; j++) {
+                for (int k = 0; k < ncnt; k++) {
+                    for (int l = 0; l < hcnt; l++) {
+                        for (int m = 0; m < cnnt; m++) {
+                            for (int n1 = 0; n1 < bcnt; n1++) {
+
+                                int atkE1 = (w.get(i).getSet().equals("atk")) ? 1 : 0;
+                                int atkE2 = (r.get(j).getSet().equals("atk")) ? 1 : 0;
+                                int atkE3 = (n.get(k).getSet().equals("atk")) ? 1 : 0;
+                                int atkE4 = (h.get(l).getSet().equals("atk")) ? 1 : 0;
+                                int atkE5 = (ch.get(m).getSet().equals("atk")) ? 1 : 0;
+                                int atkE6 = (b.get(n1).getSet().equals("atk")) ? 1 : 0;
+
+                                int critE1 = (w.get(i).getSet().equals("crit")) ? 1 : 0;
+                                int critE2 = (r.get(j).getSet().equals("crit")) ? 1 : 0;
+                                int critE3 = (n.get(k).getSet().equals("crit")) ? 1 : 0;
+                                int critE4 = (h.get(l).getSet().equals("crit")) ? 1 : 0;
+                                int critE5 = (ch.get(m).getSet().equals("crit")) ? 1 : 0;
+                                int critE6 = (b.get(n1).getSet().equals("crit")) ? 1 : 0;
+
+                                int desE1 = (w.get(i).getSet().equals("des")) ? 1 : 0;
+                                int desE2 = (r.get(j).getSet().equals("des")) ? 1 : 0;
+                                int desE3 = (n.get(k).getSet().equals("des")) ? 1 : 0;
+                                int desE4 = (h.get(l).getSet().equals("des")) ? 1 : 0;
+                                int desE5 = (ch.get(m).getSet().equals("des")) ? 1 : 0;
+                                int desE6 = (b.get(n1).getSet().equals("des")) ? 1 : 0;
+
+
+                                if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 2) {
+                                    crit = herocrit + 12 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                            + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 4) {
+                                    crit = herocrit + 24 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                            + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 6) {
+                                    crit = herocrit + 36 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                            + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                } else {
+                                    crit = herocrit + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC()) + (h.get(l).getC())
+                                            + (ch.get(m).getC()) + (b.get(n1).getC());
+                                }
+                                if (crit>=100){
+                                    crit=100;
+                                }
+
+                                // atk set
+                                fatk = (w.get(i).getF_atk()) + (r.get(j).getF_atk()) + (n.get(k).getF_atk())
+                                + (h.get(l).getF_atk()) + (ch.get(m).getF_atk()) + (b.get(n1).getF_atk());
+
+                                if (atkE1 + atkE2 + atkE3 + atkE4 + atkE5 + atkE6 >= 4) {    
+                                   
+                                    // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                    atk = 35+((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
+                                            + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                    atk = fatk+heroatk*(1+atk/100);
+                                }
+                                // broken set
+                                else {
+                                    atk = ((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
+                                            + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                          
+                                    
+                                    atk = fatk+heroatk*(1+atk/100);
+                                }
+                                // dest set
+                                if (desE1 + desE2 + desE3 + desE4 + desE5 + desE6 >= 4) {
+                                    // atk =
+                                    // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                    dest = 35 + ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
+                                            + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
+                                }
+                                // broken set
+                                else {
+                                    dest = ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
+                                            + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
+                                }
+
+                                dest = dest + herocd;
+
+                                dmg = atk*(1-crit/100)+atk*(crit/100)*(1+dest/100);
+                                //dmg2 = (Math.pow(atk,2))*(1-crit/100)+(Math.pow(atk*(1+dest/100),2))*(crit/100);
+                                //vars = dmg2 - Math.pow(dmg,2);
+                                //System.out.println(vars);
+
+                                int defE1 = (w.get(i).getSet().equals("def")) ? 1 : 0;
+                                int defE2 = (r.get(j).getSet().equals("def")) ? 1 : 0;
+                                int defE3 = (n.get(k).getSet().equals("def")) ? 1 : 0;
+                                int defE4 = (h.get(l).getSet().equals("def")) ? 1 : 0;
+                                int defE5 = (ch.get(m).getSet().equals("def")) ? 1 : 0;
+                                int defE6 = (b.get(n1).getSet().equals("def")) ? 1 : 0;
+                                def =(w.get(i).getP_def()) + (r.get(j).getP_def()) + (n.get(k).getP_def())
+                                    + (h.get(l).getP_def()) + (ch.get(m).getP_def()) + (b.get(n1).getP_def());
+
+                                fdef = (w.get(i).getF_def()) + (r.get(j).getF_def()) + (n.get(k).getF_def())
+                                + (h.get(l).getF_def()) + (ch.get(m).getF_def()) + (b.get(n1).getF_def());
+
+                                if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 2) {
+                                    def += 15;
+                                } else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 4) {
+                                    def += 30;
+                                } else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 6) {
+                                    def += 45;
+                                }
+                                
+                                def = fdef + (1+def/100)*herodef;
+                                
+                                
+                                int hpE1 = (w.get(i).getSet().equals("hp")) ? 1 : 0;
+                                int hpE2 = (r.get(j).getSet().equals("hp")) ? 1 : 0;
+                                int hpE3 = (n.get(k).getSet().equals("hp")) ? 1 : 0;
+                                int hpE4 = (h.get(l).getSet().equals("hp")) ? 1 : 0;
+                                int hpE5 = (ch.get(m).getSet().equals("hp")) ? 1 : 0;
+                                int hpE6 = (b.get(n1).getSet().equals("hp")) ? 1 : 0;
+                                hp =  (w.get(i).getP_hp()) + (r.get(j).getP_hp()) + (n.get(k).getP_hp())
+                                    + (h.get(l).getP_hp()) + (ch.get(m).getP_hp()) + (b.get(n1).getP_hp());
+                                fhp = (w.get(i).getF_hp()) + (r.get(j).getF_hp()) + (n.get(k).getF_hp())
+                                + (h.get(l).getF_hp()) + (ch.get(m).getF_hp()) + (b.get(n1).getF_hp());
+                                
+                                if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 2) {
+                                    hp += 15;
+                                } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 4) {
+                                    hp += 30;
+                                } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 6) {
+                                    hp += 45;
+                                }
+
+                                hp = fhp + (1+hp/100)*herohp;
+                                
+                            
+                                int effE1 = (w.get(i).getSet().equals("eff")) ? 1 : 0;
+                                int effE2 = (r.get(j).getSet().equals("eff")) ? 1 : 0;
+                                int effE3 = (n.get(k).getSet().equals("eff")) ? 1 : 0;
+                                int effE4 = (h.get(l).getSet().equals("eff")) ? 1 : 0;
+                                int effE5 = (ch.get(m).getSet().equals("eff")) ? 1 : 0;
+                                int effE6 = (b.get(n1).getSet().equals("eff")) ? 1 : 0;
+                                eff = (w.get(i).getEff()) + (r.get(j).getEff()) + (n.get(k).getEff())
+                                    + (h.get(l).getEff()) + (ch.get(m).getEff()) + (b.get(n1).getEff());
+
+                                if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 2) {
+                                    eff += 20;
+                                } else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 2) {
+                                    eff += 40;
+                                } else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 6) {
+                                    eff += 60;
+                                }
+                                
+                                eff=eff+heroeff;
+                                
+                                if (dmg>=maxdmg) {
+                                    if(def>=maxdef){
+                                        if(hp>=maxhp){
+                                        	if(eff>=65) {
+	                                            maxdmg = dmg;
+	                                            maxdef  = def;
+	                                            maxhp = hp;
+	        
+	                                            //minvars=vars;
+	                                            //System.out.println(minvars);  
+	                                            maxW = w.get(i);
+	                                            maxR = r.get(j);
+	                                            maxN = n.get(k);
+	                                            maxH = h.get(l);
+	                                            maxCH = ch.get(m);
+	                                            maxB = b.get(n1);
+	        
+	                                            setMaxw(i);
+	                                            setMaxr(j);
+	                                            setMaxn(k);
+	                                            setMaxh(l);
+	                                            setMaxc(m);
+	                                            setMaxb(n1);
+                                        	}
+                                            //setCV(Math.sqrt(minvars));
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println(getCV());
+        System.out.println("dmg score: " + maxdmg);
+        System.out.println("    weapon id: " + maxW.getPk());
+        System.out.println("        atk: " + maxW.getP_atk() + " spd: " + maxW.getSpd() + " crit: " + maxW.getC()
+                + " critD: " + maxW.getCd());
+        System.out.println("    head id: " + maxH.getPk());
+        System.out.println("        atk: " + maxH.getP_atk() + " spd: " + maxH.getSpd() + " crit: " + maxH.getC()
+                + " critD: " + maxH.getCd());
+        System.out.println("    chest id: " + maxCH.getPk());
+        System.out.println("        atk: " + maxCH.getP_atk() + " spd: " + maxCH.getSpd() + " crit: " + maxCH.getC()
+                + " critD: " + maxCH.getCd());
+        System.out.println("    necklace id: " + maxN.getPk());
+        System.out.println("        atk: " + maxN.getP_atk() + " spd: " + maxN.getSpd() + " crit: " + maxN.getC()
+                + " critD: " + maxN.getCd());
+        System.out.println("    ring id: " + maxR.getPk());
+        System.out.println("        atk: " + maxR.getP_atk() + " spd: " + maxR.getSpd() + " crit: " + maxR.getC()
+                + " critD: " + maxR.getCd());
+        System.out.println("    boot id: " + maxB.getPk());
+        System.out.println("        atk: " + maxB.getP_atk() + " spd: " + maxB.getSpd() + " crit: " + maxB.getC()
+                + " critD: " + maxB.getCd());
+
+        w.remove(getMaxw());
+        r.remove(getMaxr());
+        n.remove(getMaxn());
+        h.remove(getMaxh());
+        ch.remove(getMaxc());
+        b.remove(getMaxb());
+        wcnt--;
+        bcnt--;
+        cnnt--;
+        hcnt--;
+        ncnt--;
+        rcnt--;
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        getSets().add(s);
+        return s;
+    }    
+
     public synchronized  Sets superBellaCalcsv1(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
             ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Hero hero) {
         Equipment maxW = w.get(0);
@@ -696,6 +968,992 @@ public class Bag {
                                 }
                             }
 
+                        }
+                    }
+                }
+            }
+        }
+        
+        System.out.println("atk score: " + maxatk);
+        System.out.println("    weapon id: " + maxW.getPk());
+        System.out.println("        atk: " + maxW.getP_atk() + " spd: " + maxW.getSpd() + " crit: " + maxW.getC()
+                + " critD: " + maxW.getCd());
+        System.out.println("    head id: " + maxH.getPk());
+        System.out.println("        atk: " + maxH.getP_atk() + " spd: " + maxH.getSpd() + " crit: " + maxH.getC()
+                + " critD: " + maxH.getCd());
+        System.out.println("    chest id: " + maxCH.getPk());
+        System.out.println("        atk: " + maxCH.getP_atk() + " spd: " + maxCH.getSpd() + " crit: " + maxCH.getC()
+                + " critD: " + maxCH.getCd());
+        System.out.println("    necklace id: " + maxN.getPk());
+        System.out.println("        atk: " + maxN.getP_atk() + " spd: " + maxN.getSpd() + " crit: " + maxN.getC()
+                + " critD: " + maxN.getCd());
+        System.out.println("    ring id: " + maxR.getPk());
+        System.out.println("        atk: " + maxR.getP_atk() + " spd: " + maxR.getSpd() + " crit: " + maxR.getC()
+                + " critD: " + maxR.getCd());
+        System.out.println("    boot id: " + maxB.getPk());
+        System.out.println("        atk: " + maxB.getP_atk() + " spd: " + maxB.getSpd() + " crit: " + maxB.getC()
+                + " critD: " + maxB.getCd());
+
+        w.remove(getMaxw());
+        r.remove(getMaxr());
+        n.remove(getMaxn());
+        h.remove(getMaxh());
+        ch.remove(getMaxc());
+        b.remove(getMaxb());
+        wcnt--;
+        bcnt--;
+        cnnt--;
+        hcnt--;
+        ncnt--;
+        rcnt--;
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        getSets().add(s);
+        return s;
+    }
+
+
+
+       public synchronized AllResults superAllCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+            ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Hero hero) {
+        Equipment maxW = w.get(0);
+        Equipment maxR = r.get(0);
+        Equipment maxN = n.get(0);
+        Equipment maxH = h.get(0);
+        Equipment maxCH = ch.get(0);
+        Equipment maxB = b.get(0);
+
+        int heroatk = hero.getAtk();
+        int herodef = hero.getDef();
+        int herohp = hero.getHp();
+        int herospd = hero.getSpd();
+        int herocrit = hero.getCrit();
+        int herocd = hero.getCritdmg();
+        int heroeff = hero.getEff();
+        int heroeffres = hero.getEffres();
+
+        double maxatk = 0;
+        double atk = 0,fatk=0;
+        double crit = 0;
+        double eff = 0;
+        double spd = 0;
+        double hp = 0,fhp=0;
+        double def = 0,fdef=0;
+        double dest = 0;
+
+        double allatk[][][][][][] = new double[wcnt/2][rcnt/2][ncnt/2][hcnt/2][cnnt/2][bcnt/2];
+        double alldef[][][][][][] = new double[wcnt/2][rcnt/2][ncnt/2][hcnt/2][cnnt/2][bcnt/2];
+        double allhp[][][][][][] = new double[wcnt/2][rcnt/2][ncnt/2][hcnt/2][cnnt/2][bcnt/2];
+        
+
+        cntbar = 0;
+
+        for (int i = 0; i < wcnt/2; i++) {
+            handler.getG().drawProgress(Math.ceil(400 * ((double) cntbar / (wcnt))));
+            //System.out.println(Math.ceil(400 * ((double) cntbar / (wcnt))));
+            // handler.getG().drawProgress2(cntbar);
+
+            cntbar++;
+            // progressBar.setText(Integer.toString(getCntBar()));;
+
+            for (int j = 0; j < rcnt/2; j++) {
+                for (int k = 0; k < ncnt/2; k++) {
+                    for (int l = 0; l < hcnt/2; l++) {
+                        for (int m = 0; m < cnnt/2; m++) {//cnnt; m++) {
+                            for (int n1 = 0; n1 <bcnt/2; n1++) {// bcnt; n1++) {
+                        
+                                    int atkE1 = (w.get(i).getSet().equals("atk")) ? 1 : 0;
+                                    int atkE2 = (r.get(j).getSet().equals("atk")) ? 1 : 0;
+                                    int atkE3 = (n.get(k).getSet().equals("atk")) ? 1 : 0;
+                                    int atkE4 = (h.get(l).getSet().equals("atk")) ? 1 : 0;
+                                    int atkE5 = (ch.get(m).getSet().equals("atk")) ? 1 : 0;
+                                    int atkE6 = (b.get(n1).getSet().equals("atk")) ? 1 : 0;
+                                    // atk set
+                                    fatk = (w.get(i).getF_atk()) + (r.get(j).getF_atk()) + (n.get(k).getF_atk())
+                                    + (h.get(l).getF_atk()) + (ch.get(m).getF_atk()) + (b.get(n1).getF_atk());
+
+                                    if (atkE1 + atkE2 + atkE3 + atkE4 + atkE5 + atkE6 >= 4) {    
+                                    
+                                        // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                        atk = 35+((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
+                                                + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                        atk = fatk+heroatk*(1+atk/100);
+                                    }
+                                    // broken set
+                                    else {
+                                        atk = ((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
+                                                + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                            
+                                        
+                                        atk = fatk+heroatk*(1+atk/100);
+                                    }
+
+                                    allatk[i][j][k][l][m][n1] = atk;
+                                	
+                                    int defE1 = (w.get(i).getSet().equals("def")) ? 1 : 0;
+                                    int defE2 = (r.get(j).getSet().equals("def")) ? 1 : 0;
+                                    int defE3 = (n.get(k).getSet().equals("def")) ? 1 : 0;
+                                    int defE4 = (h.get(l).getSet().equals("def")) ? 1 : 0;
+                                    int defE5 = (ch.get(m).getSet().equals("def")) ? 1 : 0;
+                                    int defE6 = (b.get(n1).getSet().equals("def")) ? 1 : 0;
+                                    def =(w.get(i).getP_def()) + (r.get(j).getP_def()) + (n.get(k).getP_def())
+                                        + (h.get(l).getP_def()) + (ch.get(m).getP_def()) + (b.get(n1).getP_def());
+
+                                    fdef = (w.get(i).getF_def()) + (r.get(j).getF_def()) + (n.get(k).getF_def())
+                                    + (h.get(l).getF_def()) + (ch.get(m).getF_def()) + (b.get(n1).getF_def());
+
+                                    if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 2) {
+                                        def += 15;
+                                    } else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 4) {
+                                        def += 30;
+                                    } else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 6) {
+                                        def += 45;
+                                    }
+                                    
+                                    def = fdef + (1+def/100)*herodef;
+                                
+                                    alldef[i][j][k][l][m][n1] = def;
+
+                                    int hpE1 = (w.get(i).getSet().equals("hp")) ? 1 : 0;
+                                    int hpE2 = (r.get(j).getSet().equals("hp")) ? 1 : 0;
+                                    int hpE3 = (n.get(k).getSet().equals("hp")) ? 1 : 0;
+                                    int hpE4 = (h.get(l).getSet().equals("hp")) ? 1 : 0;
+                                    int hpE5 = (ch.get(m).getSet().equals("hp")) ? 1 : 0;
+                                    int hpE6 = (b.get(n1).getSet().equals("hp")) ? 1 : 0;
+                                    hp =  (w.get(i).getP_hp()) + (r.get(j).getP_hp()) + (n.get(k).getP_hp())
+                                        + (h.get(l).getP_hp()) + (ch.get(m).getP_hp()) + (b.get(n1).getP_hp());
+                                    fhp = (w.get(i).getF_hp()) + (r.get(j).getF_hp()) + (n.get(k).getF_hp())
+                                    + (h.get(l).getF_hp()) + (ch.get(m).getF_hp()) + (b.get(n1).getF_hp());
+                                    
+                                    if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 2) {
+                                        hp += 15;
+                                    } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 4) {
+                                        hp += 30;
+                                    } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 6) {
+                                        hp += 45;
+                                    }
+
+                                    hp = fhp + (1+hp/100)*herohp;
+                                
+                                    allhp[i][j][k][l][m][n1] = hp;
+                                    
+                                    int spdE1 = (w.get(i).getSet().equals("spd")) ? 1 : 0;
+                                    int spdE2 = (r.get(j).getSet().equals("spd")) ? 1 : 0;
+                                    int spdE3 = (n.get(k).getSet().equals("spd")) ? 1 : 0;
+                                    int spdE4 = (h.get(l).getSet().equals("spd")) ? 1 : 0;
+                                    int spdE5 = (ch.get(m).getSet().equals("spd")) ? 1 : 0;
+                                    int spdE6 = (b.get(n1).getSet().equals("spd")) ? 1 : 0;
+                                    if (spdE1 + spdE2 + spdE3 + spdE4 + spdE5 + spdE6 >= 4) {
+                                        // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                        spd = 1.25*herospd + (w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd()
+                                                + h.get(l).getSpd() + ch.get(m).getSpd() + b.get(n1).getSpd());
+                                    }
+                                    // broken set
+                                    else {
+                                        spd = herospd + w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd() + h.get(l).getSpd()
+                                                + ch.get(m).getSpd() + b.get(n1).getSpd();
+                                    }
+                                
+                                    int critE1 = (w.get(i).getSet().equals("crit")) ? 1 : 0;
+                                    int critE2 = (r.get(j).getSet().equals("crit")) ? 1 : 0;
+                                    int critE3 = (n.get(k).getSet().equals("crit")) ? 1 : 0;
+                                    int critE4 = (h.get(l).getSet().equals("crit")) ? 1 : 0;
+                                    int critE5 = (ch.get(m).getSet().equals("crit")) ? 1 : 0;
+                                    int critE6 = (b.get(n1).getSet().equals("crit")) ? 1 : 0;
+                                    if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 2) {
+                                        crit = herocrit + 12 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                    } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 4) {
+                                        crit = herocrit + 24 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                    } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 6) {
+                                        crit = herocrit + 36 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                    } else {
+                                        crit = herocrit + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC()) + (h.get(l).getC())
+                                                + (ch.get(m).getC()) + (b.get(n1).getC());
+                                    }
+                                
+                                    int desE1 = (w.get(i).getSet().equals("des")) ? 1 : 0;
+                                    int desE2 = (r.get(j).getSet().equals("des")) ? 1 : 0;
+                                    int desE3 = (n.get(k).getSet().equals("des")) ? 1 : 0;
+                                    int desE4 = (h.get(l).getSet().equals("des")) ? 1 : 0;
+                                    int desE5 = (ch.get(m).getSet().equals("des")) ? 1 : 0;
+                                    int desE6 = (b.get(n1).getSet().equals("des")) ? 1 : 0;
+                                    // dest set
+                                    if (desE1 + desE2 + desE3 + desE4 + desE5 + desE6 >= 4) {
+                                        // atk =
+                                        // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                        dest = 35 + ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
+                                                + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
+                                    }
+                                    // broken set
+                                    else {
+                                        dest = ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
+                                                + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
+                                    }
+
+                                    dest = dest + herocd;    
+                                
+                                    int effE1 = (w.get(i).getSet().equals("eff")) ? 1 : 0;
+                                    int effE2 = (r.get(j).getSet().equals("eff")) ? 1 : 0;
+                                    int effE3 = (n.get(k).getSet().equals("eff")) ? 1 : 0;
+                                    int effE4 = (h.get(l).getSet().equals("eff")) ? 1 : 0;
+                                    int effE5 = (ch.get(m).getSet().equals("eff")) ? 1 : 0;
+                                    int effE6 = (b.get(n1).getSet().equals("eff")) ? 1 : 0;
+                                    eff = (w.get(i).getEff()) + (r.get(j).getEff()) + (n.get(k).getEff())
+                                        + (h.get(l).getEff()) + (ch.get(m).getEff()) + (b.get(n1).getEff());
+
+                                    if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 2) {
+                                        eff += 20;
+                                    } else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 2) {
+                                        eff += 40;
+                                    } else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 6) {
+                                        eff += 60;
+                                    }
+                                    
+                                    eff=eff+heroeff;
+                                    
+                                    
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+        
+        return new AllResults(allatk,alldef,allhp);
+        
+    }
+       
+       public synchronized AllResults superAllCalcsv2(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+               ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Hero hero) {
+           Equipment maxW = w.get(0);
+           Equipment maxR = r.get(0);
+           Equipment maxN = n.get(0);
+           Equipment maxH = h.get(0);
+           Equipment maxCH = ch.get(0);
+           Equipment maxB = b.get(0);
+
+           int heroatk = hero.getAtk();
+           int herodef = hero.getDef();
+           int herohp = hero.getHp();
+           int herospd = hero.getSpd();
+           int herocrit = hero.getCrit();
+           int herocd = hero.getCritdmg();
+           int heroeff = hero.getEff();
+           int heroeffres = hero.getEffres();
+
+           double maxatk = 0;
+           double atk = 0,fatk=0;
+           double crit = 0;
+           double eff = 0;
+           double spd = 0;
+           double hp = 0,fhp=0;
+           double def = 0,fdef=0;
+           double dest = 0;
+
+           double allatk[][][][][][] = new double[wcnt][rcnt][ncnt][hcnt][cnnt][bcnt];
+           double alldef[][][][][][] = new double[wcnt][rcnt][ncnt][hcnt][cnnt][bcnt];
+           double allhp[][][][][][] = new double[wcnt][rcnt][ncnt][hcnt][cnnt][bcnt];
+           
+
+           cntbar = 0;
+
+           for (int i = wcnt/2; i < wcnt; i++) {
+               handler.getG().drawProgress(Math.ceil(400 * ((double) cntbar / (wcnt))));
+               //System.out.println(Math.ceil(400 * ((double) cntbar / (wcnt))));
+               // handler.getG().drawProgress2(cntbar);
+
+               cntbar++;
+               // progressBar.setText(Integer.toString(getCntBar()));;
+
+               for (int j = rcnt/2; j < rcnt; j++) {
+                   for (int k = ncnt/2; k < ncnt; k++) {
+                       for (int l = hcnt/2; l < hcnt; l++) {
+                           for (int m = cnnt/2; m < cnnt; m++) {//cnnt; m++) {
+                               for (int n1 = bcnt/2; n1 <bcnt; n1++) {// bcnt; n1++) {
+                           
+                                       int atkE1 = (w.get(i).getSet().equals("atk")) ? 1 : 0;
+                                       int atkE2 = (r.get(j).getSet().equals("atk")) ? 1 : 0;
+                                       int atkE3 = (n.get(k).getSet().equals("atk")) ? 1 : 0;
+                                       int atkE4 = (h.get(l).getSet().equals("atk")) ? 1 : 0;
+                                       int atkE5 = (ch.get(m).getSet().equals("atk")) ? 1 : 0;
+                                       int atkE6 = (b.get(n1).getSet().equals("atk")) ? 1 : 0;
+                                       // atk set
+                                       fatk = (w.get(i).getF_atk()) + (r.get(j).getF_atk()) + (n.get(k).getF_atk())
+                                       + (h.get(l).getF_atk()) + (ch.get(m).getF_atk()) + (b.get(n1).getF_atk());
+
+                                       if (atkE1 + atkE2 + atkE3 + atkE4 + atkE5 + atkE6 >= 4) {    
+                                       
+                                           // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                           atk = 35+((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
+                                                   + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                           atk = fatk+heroatk*(1+atk/100);
+                                       }
+                                       // broken set
+                                       else {
+                                           atk = ((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
+                                                   + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                               
+                                           
+                                           atk = fatk+heroatk*(1+atk/100);
+                                       }
+
+                                       allatk[i][j][k][l][m][n1] = atk;
+                                   	
+                                       int defE1 = (w.get(i).getSet().equals("def")) ? 1 : 0;
+                                       int defE2 = (r.get(j).getSet().equals("def")) ? 1 : 0;
+                                       int defE3 = (n.get(k).getSet().equals("def")) ? 1 : 0;
+                                       int defE4 = (h.get(l).getSet().equals("def")) ? 1 : 0;
+                                       int defE5 = (ch.get(m).getSet().equals("def")) ? 1 : 0;
+                                       int defE6 = (b.get(n1).getSet().equals("def")) ? 1 : 0;
+                                       def =(w.get(i).getP_def()) + (r.get(j).getP_def()) + (n.get(k).getP_def())
+                                           + (h.get(l).getP_def()) + (ch.get(m).getP_def()) + (b.get(n1).getP_def());
+
+                                       fdef = (w.get(i).getF_def()) + (r.get(j).getF_def()) + (n.get(k).getF_def())
+                                       + (h.get(l).getF_def()) + (ch.get(m).getF_def()) + (b.get(n1).getF_def());
+
+                                       if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 2) {
+                                           def += 15;
+                                       } else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 4) {
+                                           def += 30;
+                                       } else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 6) {
+                                           def += 45;
+                                       }
+                                       
+                                       def = fdef + (1+def/100)*herodef;
+                                   
+                                       alldef[i][j][k][l][m][n1] = def;
+
+                                       int hpE1 = (w.get(i).getSet().equals("hp")) ? 1 : 0;
+                                       int hpE2 = (r.get(j).getSet().equals("hp")) ? 1 : 0;
+                                       int hpE3 = (n.get(k).getSet().equals("hp")) ? 1 : 0;
+                                       int hpE4 = (h.get(l).getSet().equals("hp")) ? 1 : 0;
+                                       int hpE5 = (ch.get(m).getSet().equals("hp")) ? 1 : 0;
+                                       int hpE6 = (b.get(n1).getSet().equals("hp")) ? 1 : 0;
+                                       hp =  (w.get(i).getP_hp()) + (r.get(j).getP_hp()) + (n.get(k).getP_hp())
+                                           + (h.get(l).getP_hp()) + (ch.get(m).getP_hp()) + (b.get(n1).getP_hp());
+                                       fhp = (w.get(i).getF_hp()) + (r.get(j).getF_hp()) + (n.get(k).getF_hp())
+                                       + (h.get(l).getF_hp()) + (ch.get(m).getF_hp()) + (b.get(n1).getF_hp());
+                                       
+                                       if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 2) {
+                                           hp += 15;
+                                       } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 4) {
+                                           hp += 30;
+                                       } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 6) {
+                                           hp += 45;
+                                       }
+
+                                       hp = fhp + (1+hp/100)*herohp;
+                                   
+                                       allhp[i][j][k][l][m][n1] = hp;
+                                       
+                                       int spdE1 = (w.get(i).getSet().equals("spd")) ? 1 : 0;
+                                       int spdE2 = (r.get(j).getSet().equals("spd")) ? 1 : 0;
+                                       int spdE3 = (n.get(k).getSet().equals("spd")) ? 1 : 0;
+                                       int spdE4 = (h.get(l).getSet().equals("spd")) ? 1 : 0;
+                                       int spdE5 = (ch.get(m).getSet().equals("spd")) ? 1 : 0;
+                                       int spdE6 = (b.get(n1).getSet().equals("spd")) ? 1 : 0;
+                                       if (spdE1 + spdE2 + spdE3 + spdE4 + spdE5 + spdE6 >= 4) {
+                                           // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                           spd = 1.25*herospd + (w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd()
+                                                   + h.get(l).getSpd() + ch.get(m).getSpd() + b.get(n1).getSpd());
+                                       }
+                                       // broken set
+                                       else {
+                                           spd = herospd + w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd() + h.get(l).getSpd()
+                                                   + ch.get(m).getSpd() + b.get(n1).getSpd();
+                                       }
+                                   
+                                       int critE1 = (w.get(i).getSet().equals("crit")) ? 1 : 0;
+                                       int critE2 = (r.get(j).getSet().equals("crit")) ? 1 : 0;
+                                       int critE3 = (n.get(k).getSet().equals("crit")) ? 1 : 0;
+                                       int critE4 = (h.get(l).getSet().equals("crit")) ? 1 : 0;
+                                       int critE5 = (ch.get(m).getSet().equals("crit")) ? 1 : 0;
+                                       int critE6 = (b.get(n1).getSet().equals("crit")) ? 1 : 0;
+                                       if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 2) {
+                                           crit = herocrit + 12 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                   + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                       } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 4) {
+                                           crit = herocrit + 24 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                   + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                       } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 6) {
+                                           crit = herocrit + 36 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                   + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                       } else {
+                                           crit = herocrit + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC()) + (h.get(l).getC())
+                                                   + (ch.get(m).getC()) + (b.get(n1).getC());
+                                       }
+                                   
+                                       int desE1 = (w.get(i).getSet().equals("des")) ? 1 : 0;
+                                       int desE2 = (r.get(j).getSet().equals("des")) ? 1 : 0;
+                                       int desE3 = (n.get(k).getSet().equals("des")) ? 1 : 0;
+                                       int desE4 = (h.get(l).getSet().equals("des")) ? 1 : 0;
+                                       int desE5 = (ch.get(m).getSet().equals("des")) ? 1 : 0;
+                                       int desE6 = (b.get(n1).getSet().equals("des")) ? 1 : 0;
+                                       // dest set
+                                       if (desE1 + desE2 + desE3 + desE4 + desE5 + desE6 >= 4) {
+                                           // atk =
+                                           // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                           dest = 35 + ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
+                                                   + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
+                                       }
+                                       // broken set
+                                       else {
+                                           dest = ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
+                                                   + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
+                                       }
+
+                                       dest = dest + herocd;    
+                                   
+                                       int effE1 = (w.get(i).getSet().equals("eff")) ? 1 : 0;
+                                       int effE2 = (r.get(j).getSet().equals("eff")) ? 1 : 0;
+                                       int effE3 = (n.get(k).getSet().equals("eff")) ? 1 : 0;
+                                       int effE4 = (h.get(l).getSet().equals("eff")) ? 1 : 0;
+                                       int effE5 = (ch.get(m).getSet().equals("eff")) ? 1 : 0;
+                                       int effE6 = (b.get(n1).getSet().equals("eff")) ? 1 : 0;
+                                       eff = (w.get(i).getEff()) + (r.get(j).getEff()) + (n.get(k).getEff())
+                                           + (h.get(l).getEff()) + (ch.get(m).getEff()) + (b.get(n1).getEff());
+
+                                       if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 2) {
+                                           eff += 20;
+                                       } else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 2) {
+                                           eff += 40;
+                                       } else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 6) {
+                                           eff += 60;
+                                       }
+                                       
+                                       eff=eff+heroeff;
+                                       
+                                       
+                               }
+
+                           }
+                       }
+                   }
+               }
+           }
+           
+           return new AllResults(allatk,alldef,allhp);
+           
+       }
+    
+
+
+    public synchronized  Sets superBrusierCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+            ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Double catk, Double chp,
+            Double cCrit, Double cSpeed, Double cDef, Double cEff, Double cCd, Hero hero) {
+        Equipment maxW = w.get(0);
+        Equipment maxR = r.get(0);
+        Equipment maxN = n.get(0);
+        Equipment maxH = h.get(0);
+        Equipment maxCH = ch.get(0);
+        Equipment maxB = b.get(0);
+
+        int heroatk = hero.getAtk();
+        int herodef = hero.getDef();
+        int herohp = hero.getHp();
+        int herospd = hero.getSpd();
+        int herocrit = hero.getCrit();
+        int herocd = hero.getCritdmg();
+        int heroeff = hero.getEff();
+        int heroeffres = hero.getEffres();
+
+        boolean isAtk = true;
+        boolean isDef = true;
+        boolean isHp = true;
+        boolean isSpd = true;
+        boolean isCrit = true;
+        boolean isCd = cCd!=0;
+        boolean isEff = cEff!=0;
+
+        double maxatk = 0;
+        double atk = 0,fatk=0;
+        double crit = 0;
+        double eff = 0;
+        double spd = 0;
+        double hp = 0,fhp=0;
+        double def = 0,fdef=0;
+        double dest = 0;
+        double maxhp = 0;
+        double maxdef = 0;
+        cntbar = 0;
+        // wcnt=5;
+        // rcnt=5;
+        // ncnt=5;
+        // hcnt=5;
+        // cnnt=5;
+        // bcnt=5;
+
+        for (int i = 0; i < wcnt; i++) {
+            handler.getG().drawProgress(Math.ceil(400 * ((double) cntbar / (wcnt))));
+            //System.out.println(Math.ceil(400 * ((double) cntbar / (wcnt))));
+            // handler.getG().drawProgress2(cntbar);
+
+            cntbar++;
+            // progressBar.setText(Integer.toString(getCntBar()));;
+
+            for (int j = 0; j < rcnt; j++) {
+                for (int k = 0; k < ncnt; k++) {
+                    for (int l = 0; l < hcnt; l++) {
+                        for (int m = 0; m < cnnt; m++) {
+                            for (int n1 = 0; n1 < bcnt; n1++) {
+                                if (isAtk){
+                                    int atkE1 = (w.get(i).getSet().equals("atk")) ? 1 : 0;
+                                    int atkE2 = (r.get(j).getSet().equals("atk")) ? 1 : 0;
+                                    int atkE3 = (n.get(k).getSet().equals("atk")) ? 1 : 0;
+                                    int atkE4 = (h.get(l).getSet().equals("atk")) ? 1 : 0;
+                                    int atkE5 = (ch.get(m).getSet().equals("atk")) ? 1 : 0;
+                                    int atkE6 = (b.get(n1).getSet().equals("atk")) ? 1 : 0;
+                                    // atk set
+                                    fatk = (w.get(i).getF_atk()) + (r.get(j).getF_atk()) + (n.get(k).getF_atk())
+                                    + (h.get(l).getF_atk()) + (ch.get(m).getF_atk()) + (b.get(n1).getF_atk());
+
+                                    if (atkE1 + atkE2 + atkE3 + atkE4 + atkE5 + atkE6 >= 4) {    
+                                    
+                                        // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                        atk = 35+((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
+                                                + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                        atk = fatk+heroatk*(1+atk/100);
+                                    }
+                                    // broken set
+                                    else {
+                                        atk = ((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
+                                                + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                            
+                                        
+                                        atk = fatk+heroatk*(1+atk/100);
+                                    }
+                                }
+                                if (isDef){
+                                    int defE1 = (w.get(i).getSet().equals("def")) ? 1 : 0;
+                                    int defE2 = (r.get(j).getSet().equals("def")) ? 1 : 0;
+                                    int defE3 = (n.get(k).getSet().equals("def")) ? 1 : 0;
+                                    int defE4 = (h.get(l).getSet().equals("def")) ? 1 : 0;
+                                    int defE5 = (ch.get(m).getSet().equals("def")) ? 1 : 0;
+                                    int defE6 = (b.get(n1).getSet().equals("def")) ? 1 : 0;
+                                    def =(w.get(i).getP_def()) + (r.get(j).getP_def()) + (n.get(k).getP_def())
+                                        + (h.get(l).getP_def()) + (ch.get(m).getP_def()) + (b.get(n1).getP_def());
+
+                                    fdef = (w.get(i).getF_def()) + (r.get(j).getF_def()) + (n.get(k).getF_def())
+                                    + (h.get(l).getF_def()) + (ch.get(m).getF_def()) + (b.get(n1).getF_def());
+
+                                    if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 2) {
+                                        def += 15;
+                                    } else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 4) {
+                                        def += 30;
+                                    } else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 6) {
+                                        def += 45;
+                                    }
+                                    
+                                    def = fdef + (1+def/100)*herodef;
+                                }
+                                if(isHp){
+                                    int hpE1 = (w.get(i).getSet().equals("hp")) ? 1 : 0;
+                                    int hpE2 = (r.get(j).getSet().equals("hp")) ? 1 : 0;
+                                    int hpE3 = (n.get(k).getSet().equals("hp")) ? 1 : 0;
+                                    int hpE4 = (h.get(l).getSet().equals("hp")) ? 1 : 0;
+                                    int hpE5 = (ch.get(m).getSet().equals("hp")) ? 1 : 0;
+                                    int hpE6 = (b.get(n1).getSet().equals("hp")) ? 1 : 0;
+                                    hp =  (w.get(i).getP_hp()) + (r.get(j).getP_hp()) + (n.get(k).getP_hp())
+                                        + (h.get(l).getP_hp()) + (ch.get(m).getP_hp()) + (b.get(n1).getP_hp());
+                                    fhp = (w.get(i).getF_hp()) + (r.get(j).getF_hp()) + (n.get(k).getF_hp())
+                                    + (h.get(l).getF_hp()) + (ch.get(m).getF_hp()) + (b.get(n1).getF_hp());
+                                    
+                                    if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 2) {
+                                        hp += 15;
+                                    } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 4) {
+                                        hp += 30;
+                                    } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 6) {
+                                        hp += 45;
+                                    }
+
+                                    hp = fhp + (1+hp/100)*herohp;
+                                }
+                                if(isSpd){
+                                    int spdE1 = (w.get(i).getSet().equals("spd")) ? 1 : 0;
+                                    int spdE2 = (r.get(j).getSet().equals("spd")) ? 1 : 0;
+                                    int spdE3 = (n.get(k).getSet().equals("spd")) ? 1 : 0;
+                                    int spdE4 = (h.get(l).getSet().equals("spd")) ? 1 : 0;
+                                    int spdE5 = (ch.get(m).getSet().equals("spd")) ? 1 : 0;
+                                    int spdE6 = (b.get(n1).getSet().equals("spd")) ? 1 : 0;
+                                    if (spdE1 + spdE2 + spdE3 + spdE4 + spdE5 + spdE6 >= 4) {
+                                        // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                        spd = 1.25*herospd + (w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd()
+                                                + h.get(l).getSpd() + ch.get(m).getSpd() + b.get(n1).getSpd());
+                                    }
+                                    // broken set
+                                    else {
+                                        spd = herospd + w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd() + h.get(l).getSpd()
+                                                + ch.get(m).getSpd() + b.get(n1).getSpd();
+                                    }
+                                }
+                                if(isCrit){
+                                    int critE1 = (w.get(i).getSet().equals("crit")) ? 1 : 0;
+                                    int critE2 = (r.get(j).getSet().equals("crit")) ? 1 : 0;
+                                    int critE3 = (n.get(k).getSet().equals("crit")) ? 1 : 0;
+                                    int critE4 = (h.get(l).getSet().equals("crit")) ? 1 : 0;
+                                    int critE5 = (ch.get(m).getSet().equals("crit")) ? 1 : 0;
+                                    int critE6 = (b.get(n1).getSet().equals("crit")) ? 1 : 0;
+                                    if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 2) {
+                                        crit = herocrit + 12 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                    } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 4) {
+                                        crit = herocrit + 24 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                    } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 6) {
+                                        crit = herocrit + 36 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                    } else {
+                                        crit = herocrit + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC()) + (h.get(l).getC())
+                                                + (ch.get(m).getC()) + (b.get(n1).getC());
+                                    }
+                                }
+                                if(false){
+                                    int desE1 = (w.get(i).getSet().equals("des")) ? 1 : 0;
+                                    int desE2 = (r.get(j).getSet().equals("des")) ? 1 : 0;
+                                    int desE3 = (n.get(k).getSet().equals("des")) ? 1 : 0;
+                                    int desE4 = (h.get(l).getSet().equals("des")) ? 1 : 0;
+                                    int desE5 = (ch.get(m).getSet().equals("des")) ? 1 : 0;
+                                    int desE6 = (b.get(n1).getSet().equals("des")) ? 1 : 0;
+                                    // dest set
+                                    if (desE1 + desE2 + desE3 + desE4 + desE5 + desE6 >= 4) {
+                                        // atk =
+                                        // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                        dest = 35 + ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
+                                                + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
+                                    }
+                                    // broken set
+                                    else {
+                                        dest = ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
+                                                + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
+                                    }
+
+                                    dest = dest + herocd;    
+                                }
+                                if(false){
+                                    int effE1 = (w.get(i).getSet().equals("eff")) ? 1 : 0;
+                                    int effE2 = (r.get(j).getSet().equals("eff")) ? 1 : 0;
+                                    int effE3 = (n.get(k).getSet().equals("eff")) ? 1 : 0;
+                                    int effE4 = (h.get(l).getSet().equals("eff")) ? 1 : 0;
+                                    int effE5 = (ch.get(m).getSet().equals("eff")) ? 1 : 0;
+                                    int effE6 = (b.get(n1).getSet().equals("eff")) ? 1 : 0;
+                                    eff = (w.get(i).getEff()) + (r.get(j).getEff()) + (n.get(k).getEff())
+                                        + (h.get(l).getEff()) + (ch.get(m).getEff()) + (b.get(n1).getEff());
+
+                                    if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 2) {
+                                        eff += 20;
+                                    } else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 2) {
+                                        eff += 40;
+                                    } else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 6) {
+                                        eff += 60;
+                                    }
+                                    
+                                    eff=eff+heroeff;
+                                }
+
+
+                                if (maxhp<=hp  &&  maxdef<=def  && spd >= 170 && crit>=50 ) {
+                                    maxhp = hp;
+                                    maxdef = def;
+                                    //System.out.println(atk);  
+                                    maxW = w.get(i);
+                                    maxR = r.get(j);
+                                    maxN = n.get(k);
+                                    maxH = h.get(l);
+                                    maxCH = ch.get(m);
+                                    maxB = b.get(n1);
+
+                                    setMaxw(i);
+                                    setMaxr(j);
+                                    setMaxn(k);
+                                    setMaxh(l);
+                                    setMaxc(m);
+                                    setMaxb(n1);
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+        
+        System.out.println("atk score: " + maxatk);
+        System.out.println("    weapon id: " + maxW.getPk());
+        System.out.println("        atk: " + maxW.getP_atk() + " spd: " + maxW.getSpd() + " crit: " + maxW.getC()
+                + " critD: " + maxW.getCd());
+        System.out.println("    head id: " + maxH.getPk());
+        System.out.println("        atk: " + maxH.getP_atk() + " spd: " + maxH.getSpd() + " crit: " + maxH.getC()
+                + " critD: " + maxH.getCd());
+        System.out.println("    chest id: " + maxCH.getPk());
+        System.out.println("        atk: " + maxCH.getP_atk() + " spd: " + maxCH.getSpd() + " crit: " + maxCH.getC()
+                + " critD: " + maxCH.getCd());
+        System.out.println("    necklace id: " + maxN.getPk());
+        System.out.println("        atk: " + maxN.getP_atk() + " spd: " + maxN.getSpd() + " crit: " + maxN.getC()
+                + " critD: " + maxN.getCd());
+        System.out.println("    ring id: " + maxR.getPk());
+        System.out.println("        atk: " + maxR.getP_atk() + " spd: " + maxR.getSpd() + " crit: " + maxR.getC()
+                + " critD: " + maxR.getCd());
+        System.out.println("    boot id: " + maxB.getPk());
+        System.out.println("        atk: " + maxB.getP_atk() + " spd: " + maxB.getSpd() + " crit: " + maxB.getC()
+                + " critD: " + maxB.getCd());
+
+        w.remove(getMaxw());
+        r.remove(getMaxr());
+        n.remove(getMaxn());
+        h.remove(getMaxh());
+        ch.remove(getMaxc());
+        b.remove(getMaxb());
+        wcnt--;
+        bcnt--;
+        cnnt--;
+        hcnt--;
+        ncnt--;
+        rcnt--;
+        Sets s = new Sets(maxW, maxH, maxCH, maxN, maxR, maxB);
+        getSets().add(s);
+        return s;
+    }
+
+public synchronized  Sets superLifeBrusierCalcs(ArrayList<Equipment> w, ArrayList<Equipment> h, ArrayList<Equipment> ch,
+            ArrayList<Equipment> n, ArrayList<Equipment> r, ArrayList<Equipment> b, Hero hero) {
+        Equipment maxW = w.get(0);
+        Equipment maxR = r.get(0);
+        Equipment maxN = n.get(0);
+        Equipment maxH = h.get(0);
+        Equipment maxCH = ch.get(0);
+        Equipment maxB = b.get(0);
+
+        int heroatk = hero.getAtk();
+        int herodef = hero.getDef();
+        int herohp = hero.getHp();
+        int herospd = hero.getSpd();
+        int herocrit = hero.getCrit();
+        int herocd = hero.getCritdmg();
+        int heroeff = hero.getEff();
+        int heroeffres = hero.getEffres();
+
+        boolean isAtk = true;
+        boolean isDef = true;
+        boolean isHp = true;
+        boolean isSpd = true;
+        boolean isCrit = true;
+
+        double maxatk = 0;
+        double atk = 0,fatk=0;
+        double crit = 0;
+        double eff = 0;
+        double spd = 0;
+        double hp = 0,fhp=0;
+        double def = 0,fdef=0;
+        double dest = 0;
+        double maxhp = 0;
+        double maxdef = 0;
+        cntbar = 0;
+        // wcnt=5;
+        // rcnt=5;
+        // ncnt=5;
+        // hcnt=5;
+        // cnnt=5;
+        // bcnt=5;
+
+        for (int i = 0; i < wcnt; i++) {
+            handler.getG().drawProgress(Math.ceil(400 * ((double) cntbar / (wcnt))));
+            //System.out.println(Math.ceil(400 * ((double) cntbar / (wcnt))));
+            // handler.getG().drawProgress2(cntbar);
+
+            cntbar++;
+            // progressBar.setText(Integer.toString(getCntBar()));;
+
+            for (int j = 0; j < rcnt; j++) {
+                for (int k = 0; k < ncnt; k++) {
+                    for (int l = 0; l < hcnt; l++) {
+                        for (int m = 0; m < cnnt; m++) {
+                            for (int n1 = 0; n1 < bcnt; n1++) {
+                                int lifeE1 = (w.get(i).getSet().equals("life")) ? 1 : 0;
+                                int lifeE2 = (r.get(j).getSet().equals("life")) ? 1 : 0;
+                                int lifeE3 = (n.get(k).getSet().equals("life")) ? 1 : 0;
+                                int lifeE4 = (h.get(l).getSet().equals("life")) ? 1 : 0;
+                                int lifeE5 = (ch.get(m).getSet().equals("life")) ? 1 : 0;
+                                int lifeE6 = (b.get(n1).getSet().equals("life")) ? 1 : 0;
+
+                                if (lifeE1+lifeE2+lifeE3+lifeE4+lifeE5+lifeE6>=4){
+                                    if (isAtk){
+                                        int atkE1 = (w.get(i).getSet().equals("atk")) ? 1 : 0;
+                                        int atkE2 = (r.get(j).getSet().equals("atk")) ? 1 : 0;
+                                        int atkE3 = (n.get(k).getSet().equals("atk")) ? 1 : 0;
+                                        int atkE4 = (h.get(l).getSet().equals("atk")) ? 1 : 0;
+                                        int atkE5 = (ch.get(m).getSet().equals("atk")) ? 1 : 0;
+                                        int atkE6 = (b.get(n1).getSet().equals("atk")) ? 1 : 0;
+                                        // atk set
+                                        fatk = (w.get(i).getF_atk()) + (r.get(j).getF_atk()) + (n.get(k).getF_atk())
+                                        + (h.get(l).getF_atk()) + (ch.get(m).getF_atk()) + (b.get(n1).getF_atk());
+    
+                                        if (atkE1 + atkE2 + atkE3 + atkE4 + atkE5 + atkE6 >= 4) {    
+                                        
+                                            // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                            atk = 35+((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
+                                                    + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                            atk = fatk+heroatk*(1+atk/100);
+                                        }
+                                        // broken set
+                                        else {
+                                            atk = ((w.get(i).getP_atk()) + (r.get(j).getP_atk()) + (n.get(k).getP_atk())
+                                                    + (h.get(l).getP_atk()) + (ch.get(m).getP_atk()) + (b.get(n1).getP_atk()));
+                                                
+                                            
+                                            atk = fatk+heroatk*(1+atk/100);
+                                        }
+                                    }
+                                    if (isDef){
+                                        int defE1 = (w.get(i).getSet().equals("def")) ? 1 : 0;
+                                        int defE2 = (r.get(j).getSet().equals("def")) ? 1 : 0;
+                                        int defE3 = (n.get(k).getSet().equals("def")) ? 1 : 0;
+                                        int defE4 = (h.get(l).getSet().equals("def")) ? 1 : 0;
+                                        int defE5 = (ch.get(m).getSet().equals("def")) ? 1 : 0;
+                                        int defE6 = (b.get(n1).getSet().equals("def")) ? 1 : 0;
+                                        def =(w.get(i).getP_def()) + (r.get(j).getP_def()) + (n.get(k).getP_def())
+                                            + (h.get(l).getP_def()) + (ch.get(m).getP_def()) + (b.get(n1).getP_def());
+    
+                                        fdef = (w.get(i).getF_def()) + (r.get(j).getF_def()) + (n.get(k).getF_def())
+                                        + (h.get(l).getF_def()) + (ch.get(m).getF_def()) + (b.get(n1).getF_def());
+    
+                                        if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 2) {
+                                            def += 15;
+                                        } else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 4) {
+                                            def += 30;
+                                        } else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 6) {
+                                            def += 45;
+                                        }
+                                        
+                                        def = fdef + (1+def/100)*herodef;
+                                    }
+                                    if(isHp){
+                                        int hpE1 = (w.get(i).getSet().equals("hp")) ? 1 : 0;
+                                        int hpE2 = (r.get(j).getSet().equals("hp")) ? 1 : 0;
+                                        int hpE3 = (n.get(k).getSet().equals("hp")) ? 1 : 0;
+                                        int hpE4 = (h.get(l).getSet().equals("hp")) ? 1 : 0;
+                                        int hpE5 = (ch.get(m).getSet().equals("hp")) ? 1 : 0;
+                                        int hpE6 = (b.get(n1).getSet().equals("hp")) ? 1 : 0;
+                                        hp =  (w.get(i).getP_hp()) + (r.get(j).getP_hp()) + (n.get(k).getP_hp())
+                                            + (h.get(l).getP_hp()) + (ch.get(m).getP_hp()) + (b.get(n1).getP_hp());
+                                        fhp = (w.get(i).getF_hp()) + (r.get(j).getF_hp()) + (n.get(k).getF_hp())
+                                        + (h.get(l).getF_hp()) + (ch.get(m).getF_hp()) + (b.get(n1).getF_hp());
+                                        
+                                        if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 2) {
+                                            hp += 15;
+                                        } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 4) {
+                                            hp += 30;
+                                        } else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 6) {
+                                            hp += 45;
+                                        }
+    
+                                        hp = fhp + (1+hp/100)*herohp;
+                                    }
+                                    if(isSpd){
+                                        int spdE1 = (w.get(i).getSet().equals("spd")) ? 1 : 0;
+                                        int spdE2 = (r.get(j).getSet().equals("spd")) ? 1 : 0;
+                                        int spdE3 = (n.get(k).getSet().equals("spd")) ? 1 : 0;
+                                        int spdE4 = (h.get(l).getSet().equals("spd")) ? 1 : 0;
+                                        int spdE5 = (ch.get(m).getSet().equals("spd")) ? 1 : 0;
+                                        int spdE6 = (b.get(n1).getSet().equals("spd")) ? 1 : 0;
+                                        if (spdE1 + spdE2 + spdE3 + spdE4 + spdE5 + spdE6 >= 4) {
+                                            // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                            spd = 1.25*herospd + (w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd()
+                                                    + h.get(l).getSpd() + ch.get(m).getSpd() + b.get(n1).getSpd());
+                                        }
+                                        // broken set
+                                        else {
+                                            spd = herospd + w.get(i).getSpd() + r.get(j).getSpd() + n.get(k).getSpd() + h.get(l).getSpd()
+                                                    + ch.get(m).getSpd() + b.get(n1).getSpd();
+                                        }
+                                    }
+                                    if(isCrit){
+                                        int critE1 = (w.get(i).getSet().equals("crit")) ? 1 : 0;
+                                        int critE2 = (r.get(j).getSet().equals("crit")) ? 1 : 0;
+                                        int critE3 = (n.get(k).getSet().equals("crit")) ? 1 : 0;
+                                        int critE4 = (h.get(l).getSet().equals("crit")) ? 1 : 0;
+                                        int critE5 = (ch.get(m).getSet().equals("crit")) ? 1 : 0;
+                                        int critE6 = (b.get(n1).getSet().equals("crit")) ? 1 : 0;
+                                        if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 2) {
+                                            crit = herocrit + 12 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                    + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                        } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 4) {
+                                            crit = herocrit + 24 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                    + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                        } else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 6) {
+                                            crit = herocrit + 36 + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC())
+                                                    + (h.get(l).getC()) + (ch.get(m).getC()) + (b.get(n1).getC());
+                                        } else {
+                                            crit = herocrit + (w.get(i).getC()) + (r.get(j).getC()) + (n.get(k).getC()) + (h.get(l).getC())
+                                                    + (ch.get(m).getC()) + (b.get(n1).getC());
+                                        }
+                                    }
+                                    if(false){
+                                        int desE1 = (w.get(i).getSet().equals("des")) ? 1 : 0;
+                                        int desE2 = (r.get(j).getSet().equals("des")) ? 1 : 0;
+                                        int desE3 = (n.get(k).getSet().equals("des")) ? 1 : 0;
+                                        int desE4 = (h.get(l).getSet().equals("des")) ? 1 : 0;
+                                        int desE5 = (ch.get(m).getSet().equals("des")) ? 1 : 0;
+                                        int desE6 = (b.get(n1).getSet().equals("des")) ? 1 : 0;
+                                        // dest set
+                                        if (desE1 + desE2 + desE3 + desE4 + desE5 + desE6 >= 4) {
+                                            // atk =
+                                            // 1.35*(w.get(i).getA_score()+r.get(j).getA_score()+n.get(k).getA_score()+h.get(l).getA_score());
+                                            dest = 35 + ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
+                                                    + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
+                                        }
+                                        // broken set
+                                        else {
+                                            dest = ((w.get(i).getCd()) + (r.get(j).getCd()) + (n.get(k).getCd())
+                                                    + (h.get(l).getCd()) + (ch.get(m).getCd()) + (b.get(n1).getCd()));
+                                        }
+    
+                                        dest = dest + herocd;    
+                                    }
+                                    if(false){
+                                        int effE1 = (w.get(i).getSet().equals("eff")) ? 1 : 0;
+                                        int effE2 = (r.get(j).getSet().equals("eff")) ? 1 : 0;
+                                        int effE3 = (n.get(k).getSet().equals("eff")) ? 1 : 0;
+                                        int effE4 = (h.get(l).getSet().equals("eff")) ? 1 : 0;
+                                        int effE5 = (ch.get(m).getSet().equals("eff")) ? 1 : 0;
+                                        int effE6 = (b.get(n1).getSet().equals("eff")) ? 1 : 0;
+                                        eff = (w.get(i).getEff()) + (r.get(j).getEff()) + (n.get(k).getEff())
+                                            + (h.get(l).getEff()) + (ch.get(m).getEff()) + (b.get(n1).getEff());
+    
+                                        if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 2) {
+                                            eff += 20;
+                                        } else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 2) {
+                                            eff += 40;
+                                        } else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 6) {
+                                            eff += 60;
+                                        }
+                                        
+                                        eff=eff+heroeff;
+                                    }
+    
+                                    if (maxhp<=hp  &&  maxdef<=def  && crit>=50 ) {
+                                        maxhp = hp;
+                                        maxdef = def;
+                                        //System.out.println(atk);  
+                                        maxW = w.get(i);
+                                        maxR = r.get(j);
+                                        maxN = n.get(k);
+                                        maxH = h.get(l);
+                                        maxCH = ch.get(m);
+                                        maxB = b.get(n1);
+    
+                                        setMaxw(i);
+                                        setMaxr(j);
+                                        setMaxn(k);
+                                        setMaxh(l);
+                                        setMaxc(m);
+                                        setMaxb(n1);
+                                    }
+                                }
+                            }
                         }
                     }
                 }

@@ -3,9 +3,9 @@ package E7v2;
 public class FinalHero {
  
     double atk,def,hp,spd,crit,cd,eff,effres;
-    String name;
+    String name,bname;
     public FinalHero(String name,double atk, double def, double hp, double spd,
-        double crit, double cd, double eff, double effres){
+        double crit, double cd, double eff, double effres,String bname){
         this.name = name;
         this.atk = atk;
         this.def = def;
@@ -15,6 +15,7 @@ public class FinalHero {
         this.cd = cd;
         this.eff = eff;
         this.effres = effres;
+        this.bname = bname;
     }
 
     public double getAtk() {
@@ -87,6 +88,14 @@ public class FinalHero {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBname() {
+        return this.bname;
+    }
+
+    public void setBname(String bname) {
+        this.bname = bname;
     }
 
 }

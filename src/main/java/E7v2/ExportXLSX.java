@@ -27,38 +27,41 @@ public class ExportXLSX {
         sheet = workbook.createSheet("Sheet1"); 
     }
     
-
+    public void addLabels(){
+        
+    }
     public void loadData(){
         int rownum=0;
         int cntr=0;
         Equipment equip;
         //add headers
-        Cell first_cell;
-        Row first_row = sheet.createRow(rownum++);
-
-        first_cell = first_row.createCell(1); 
-        first_cell.setCellValue("p atk");
-        first_cell = first_row.createCell(2); 
-        first_cell.setCellValue("p def");
-        first_cell = first_row.createCell(3); 
-        first_cell.setCellValue("p hp");
-        first_cell = first_row.createCell(4); 
-        first_cell.setCellValue("crit %");
-        first_cell = first_row.createCell(5); 
-        first_cell.setCellValue("crit dmg");
-        first_cell = first_row.createCell(6); 
-        first_cell.setCellValue("speed");
-        first_cell = first_row.createCell(7); 
-        first_cell.setCellValue("eff");
-        first_cell = first_row.createCell(8); 
-        first_cell.setCellValue("eff res");
-        first_cell = first_row.createCell(9); 
-        first_cell.setCellValue("set");
-        first_cell = first_row.createCell(10); 
-        first_cell.setCellValue("pk");
+        
+        
 
         for (int i=0;i<getS().size();i++){
+            Cell first_cell;
             //Row row = sheet.createRow(rownum++);
+            Row first_row = sheet.createRow(rownum++);
+            first_cell = first_row.createCell(1); 
+            first_cell.setCellValue("p atk");
+            first_cell = first_row.createCell(2); 
+            first_cell.setCellValue("p def");
+            first_cell = first_row.createCell(3); 
+            first_cell.setCellValue("p hp");
+            first_cell = first_row.createCell(4); 
+            first_cell.setCellValue("crit %");
+            first_cell = first_row.createCell(5); 
+            first_cell.setCellValue("crit dmg");
+            first_cell = first_row.createCell(6); 
+            first_cell.setCellValue("speed");
+            first_cell = first_row.createCell(7); 
+            first_cell.setCellValue("eff");
+            first_cell = first_row.createCell(8); 
+            first_cell.setCellValue("eff res");
+            first_cell = first_row.createCell(9); 
+            first_cell.setCellValue("set");
+            first_cell = first_row.createCell(10); 
+            first_cell.setCellValue("pk");
             Sets s = getS().get(i);
             Map<String,Double> history = getHistory();
 
@@ -193,7 +196,8 @@ public class ExportXLSX {
             cell.setCellValue(getFhero().get(i).getEff());
             cell = row2.createCell(8);
             cell.setCellValue(getFhero().get(i).getEffres());
-
+            cell = row2.createCell(9);
+            cell.setCellValue(getFhero().get(i).getBname());
 
 
         Row r1 = sheet.createRow(rownum++);

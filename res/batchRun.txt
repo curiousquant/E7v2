@@ -1,8 +1,15 @@
-A.Ras,Run Speed Calcs
+SSB,Bella Dmg
+Alencia,Brusier Dmg
 S.Angelica,Run Speed Calcs
 Kayron,Max Dmg
-SSB,Max Dmg
 Sigret,Wyvern 13
-Alencia,Hp Calcs
+Angelica,Hp Calcs
+C.Zerato,Lifesteal
+Violet,Lifesteal
+C.Dominel,Max Dmg
+Celine,Max Dmg
+C.Armin,Run Speed Calcs
+BBK,Max Dmg
+Melissa,Max Dmg
 Roana,Hp Calcs
 Roana,Export XLSX

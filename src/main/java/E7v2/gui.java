@@ -49,7 +49,7 @@ public class gui extends JPanel implements ActionListener {
     Map<String, JTextField> items, sumItems;
     Map<String, Double> history;
     JButton setButton, spdButton, resetButton, wyvernButton, bellaButton, hpButton, critButton, xlsxButton,
-            saveButton, loadButton, stopButton, batchButton;
+            saveButton, loadButton, stopButton, batchButton,brusierButton,bellav2Button,lifeButton;
     protected ExportXLSX xlsx;
     int cnt,cnt2;
     Handler h;
@@ -250,7 +250,7 @@ public class gui extends JPanel implements ActionListener {
         //drawProgress(400);
     }
 
-    public void calcHero() {
+    public void calcHero(String bName) {
         List<String> columns = new ArrayList<String>();
         Collections.addAll(columns, "patk", "pdef", "php", "speed", "pcrit", "pcritdmg", "eff", "effres", "fatk","fdef","fhp", "set");
         Hero selectedHero = b.getHeroBag().get(heroCb.getSelectedItem().toString());
@@ -412,7 +412,8 @@ public class gui extends JPanel implements ActionListener {
                                 Double.parseDouble(heroDefTxt.getText()),
                                 Double.parseDouble(heroHpTxt.getText()),Double.parseDouble(heroSpdTxt.getText()),
                                 Double.parseDouble(heroCritTxt.getText()),Double.parseDouble(heroCdTxt.getText()),
-                                Double.parseDouble(heroEffTxt.getText()),Double.parseDouble(heroEffResTxt.getText())));
+                                Double.parseDouble(heroEffTxt.getText()),Double.parseDouble(heroEffResTxt.getText()),
+                                bName));
         cnt2++;
         drawProgress(400);
         running=false;
@@ -601,6 +602,7 @@ public class gui extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent evt) {
         running=true;
+        String bName = evt.getActionCommand();
         if ("Atk Calcs".equals(evt.getActionCommand())) {
 //thread            threadatk = new Thread() {
 //thread                public void run() {
@@ -674,7 +676,7 @@ public class gui extends JPanel implements ActionListener {
                     }
                     sumCols();
                     revalidate();
-                    calcHero();
+                    calcHero(bName);
                     threadCnt++;
  //thread               }
 //thread            };
@@ -749,7 +751,7 @@ public class gui extends JPanel implements ActionListener {
                     }
                     sumCols();
                     revalidate();
-                    calcHero();
+                    calcHero(bName);
                     threadCnt++;
     //thread            }
     //thread        };
@@ -819,7 +821,7 @@ public class gui extends JPanel implements ActionListener {
                     }
                     sumCols();
                     revalidate();
-                    calcHero();
+                    calcHero(bName);
                     threadCnt++;
   //thread              }
   //thread          };
@@ -894,14 +896,244 @@ public class gui extends JPanel implements ActionListener {
                     }
                     sumCols();
                     revalidate();
-                    calcHero();
+                    calcHero(bName);
                     threadCnt++;
    //thread             }
   //thread         };
             
   //thread          threadcustom.start();
             
-        } else if ("Max Dmg".equals(evt.getActionCommand())) {
+
+  
+        } 
+     else if ("Brusier Dmg".equals(evt.getActionCommand())) {
+        //thread       threadcustom = new Thread() {
+        //thread           public void run() {
+                       Sets s = b.superBrusierCalcs(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB(),
+                               Double.parseDouble(customAtkTxt.getText()), Double.parseDouble(customHpTxt.getText()),
+                               Double.parseDouble(customCritTxt.getText()), Double.parseDouble(customSpeedTxt.getText()),
+                               Double.parseDouble(customDefTxt.getText()), Double.parseDouble(customEffTxt.getText()),
+                               Double.parseDouble(customCdTxt.getText()),
+                               b.getHeroBag().get(heroCb.getSelectedItem().toString()));
+   
+                       List<String> rows = new ArrayList<String>();
+                       Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
+                       List<String> columns = new ArrayList<String>();
+                       Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres",
+                               "fatk", "fdef", "fhp", "set", "pk");
+                       Equipment e;
+                       String values;
+                       for (int i = 0; i < rows.size(); i++) {
+                           for (int j = 0; j < columns.size(); j++) {
+                               values = "";
+                               e = null;
+   
+                               if (i == 0) {
+                                   e = s.getWeapon();
+                               } else if (i == 1) {
+                                   e = s.getHead();
+                               } else if (i == 2) {
+                                   e = s.getChest();
+                               } else if (i == 3) {
+                                   e = s.getNeck();
+                               } else if (i == 4) {
+                                   e = s.getRing();
+                               } else if (i == 5) {
+                                   e = s.getBoot();
+                               }
+   
+                               if (j == 0) {
+                                   values = Integer.toString(e.getP_atk());
+                               } else if (j == 1) {
+                                   values = Integer.toString(e.getP_def());
+                               } else if (j == 2) {
+                                   values = Integer.toString(e.getP_hp());
+                               } else if (j == 3) {
+                                   values = Integer.toString(e.getC());
+                               } else if (j == 4) {
+                                   values = Integer.toString(e.getCd());
+                               } else if (j == 5) {
+                                   values = Integer.toString(e.getSpd());
+                               } else if (j == 6) {
+                                   values = Integer.toString(e.getEff());
+                               } else if (j == 7) {
+                                   values = Integer.toString(e.getEffres());
+                               } else if (j == 8) {
+                                   // values = e.getSet();
+                                   values = Integer.toString(e.getF_atk());
+                               } else if (j == 9) {
+                                   values = Integer.toString(e.getF_def());
+                                   // values = Integer.toString(e.getPk());
+                               } else if (j == 10) {
+                                   values = Integer.toString(e.getF_hp());
+                               } else if (j == 11) {
+                                   values = e.getSet();
+                               } else if (j == 12) {
+                                   values = Integer.toString(e.getPk());
+                               }
+                               items.get(rows.get(i) + columns.get(j)).setText(values);
+                           }
+                       }
+                       sumCols();
+                       revalidate();
+                       calcHero(bName);
+                       threadCnt++;
+      //thread             }
+     //thread         };
+               
+     //thread          threadcustom.start();
+               
+           } 
+        
+           else if ("Bella Dmg".equals(evt.getActionCommand())) {
+            //thread       threadcustom = new Thread() {
+            //thread           public void run() {
+                           Sets s = b.superBellaCalcsv2(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB(),
+                                    b.getHeroBag().get(heroCb.getSelectedItem().toString()));
+       
+                           List<String> rows = new ArrayList<String>();
+                           Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
+                           List<String> columns = new ArrayList<String>();
+                           Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres",
+                                   "fatk", "fdef", "fhp", "set", "pk");
+                           Equipment e;
+                           String values;
+                           for (int i = 0; i < rows.size(); i++) {
+                               for (int j = 0; j < columns.size(); j++) {
+                                   values = "";
+                                   e = null;
+       
+                                   if (i == 0) {
+                                       e = s.getWeapon();
+                                   } else if (i == 1) {
+                                       e = s.getHead();
+                                   } else if (i == 2) {
+                                       e = s.getChest();
+                                   } else if (i == 3) {
+                                       e = s.getNeck();
+                                   } else if (i == 4) {
+                                       e = s.getRing();
+                                   } else if (i == 5) {
+                                       e = s.getBoot();
+                                   }
+       
+                                   if (j == 0) {
+                                       values = Integer.toString(e.getP_atk());
+                                   } else if (j == 1) {
+                                       values = Integer.toString(e.getP_def());
+                                   } else if (j == 2) {
+                                       values = Integer.toString(e.getP_hp());
+                                   } else if (j == 3) {
+                                       values = Integer.toString(e.getC());
+                                   } else if (j == 4) {
+                                       values = Integer.toString(e.getCd());
+                                   } else if (j == 5) {
+                                       values = Integer.toString(e.getSpd());
+                                   } else if (j == 6) {
+                                       values = Integer.toString(e.getEff());
+                                   } else if (j == 7) {
+                                       values = Integer.toString(e.getEffres());
+                                   } else if (j == 8) {
+                                       // values = e.getSet();
+                                       values = Integer.toString(e.getF_atk());
+                                   } else if (j == 9) {
+                                       values = Integer.toString(e.getF_def());
+                                       // values = Integer.toString(e.getPk());
+                                   } else if (j == 10) {
+                                       values = Integer.toString(e.getF_hp());
+                                   } else if (j == 11) {
+                                       values = e.getSet();
+                                   } else if (j == 12) {
+                                       values = Integer.toString(e.getPk());
+                                   }
+                                   items.get(rows.get(i) + columns.get(j)).setText(values);
+                               }
+                           }
+                           sumCols();
+                           revalidate();
+                           calcHero(bName);
+                           threadCnt++;
+          //thread             }
+         //thread         };
+                   
+         //thread          threadcustom.start();
+                   
+               } 
+               else if ("Lifesteal".equals(evt.getActionCommand())) {
+                //thread       threadcustom = new Thread() {
+                //thread           public void run() {
+                               Sets s = b.superLifeBrusierCalcs(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB(),
+                                        b.getHeroBag().get(heroCb.getSelectedItem().toString()));
+           
+                               List<String> rows = new ArrayList<String>();
+                               Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
+                               List<String> columns = new ArrayList<String>();
+                               Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres",
+                                       "fatk", "fdef", "fhp", "set", "pk");
+                               Equipment e;
+                               String values;
+                               for (int i = 0; i < rows.size(); i++) {
+                                   for (int j = 0; j < columns.size(); j++) {
+                                       values = "";
+                                       e = null;
+           
+                                       if (i == 0) {
+                                           e = s.getWeapon();
+                                       } else if (i == 1) {
+                                           e = s.getHead();
+                                       } else if (i == 2) {
+                                           e = s.getChest();
+                                       } else if (i == 3) {
+                                           e = s.getNeck();
+                                       } else if (i == 4) {
+                                           e = s.getRing();
+                                       } else if (i == 5) {
+                                           e = s.getBoot();
+                                       }
+           
+                                       if (j == 0) {
+                                           values = Integer.toString(e.getP_atk());
+                                       } else if (j == 1) {
+                                           values = Integer.toString(e.getP_def());
+                                       } else if (j == 2) {
+                                           values = Integer.toString(e.getP_hp());
+                                       } else if (j == 3) {
+                                           values = Integer.toString(e.getC());
+                                       } else if (j == 4) {
+                                           values = Integer.toString(e.getCd());
+                                       } else if (j == 5) {
+                                           values = Integer.toString(e.getSpd());
+                                       } else if (j == 6) {
+                                           values = Integer.toString(e.getEff());
+                                       } else if (j == 7) {
+                                           values = Integer.toString(e.getEffres());
+                                       } else if (j == 8) {
+                                           // values = e.getSet();
+                                           values = Integer.toString(e.getF_atk());
+                                       } else if (j == 9) {
+                                           values = Integer.toString(e.getF_def());
+                                           // values = Integer.toString(e.getPk());
+                                       } else if (j == 10) {
+                                           values = Integer.toString(e.getF_hp());
+                                       } else if (j == 11) {
+                                           values = e.getSet();
+                                       } else if (j == 12) {
+                                           values = Integer.toString(e.getPk());
+                                       }
+                                       items.get(rows.get(i) + columns.get(j)).setText(values);
+                                   }
+                               }
+                               sumCols();
+                               revalidate();
+                               calcHero(bName);
+                               threadCnt++;
+              //thread             }
+             //thread         };
+                       
+             //thread          threadcustom.start();
+                       
+                   } 
+        else if ("Max Dmg".equals(evt.getActionCommand())) {
    //thread         threadbella = new Thread() {
    //thread     public void run() {
                     Sets s = b.superBellaCalcsv1(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB(),
@@ -971,7 +1203,87 @@ public class gui extends JPanel implements ActionListener {
                     }
                     sumCols();
                     revalidate();
-                    calcHero();
+                    calcHero(bName);
+                    //cvTxt.setText(String.valueOf(s.getCV()));
+                    threadCnt++;
+                }
+    //thread        };
+   //thread         threadbella.start();
+   //thread     } 
+
+
+   
+         else if ("Max Dmg".equals(evt.getActionCommand())) {
+   //thread         threadbella = new Thread() {
+   //thread     public void run() {
+                    Sets s = b.superBellaCalcsv1(b.getW(), b.getH(), b.getCh(), b.getN(), b.getR(), b.getB(),
+                    b.getHeroBag().get(heroCb.getSelectedItem().toString()));
+                    //double cv =b.getHeroBag().get(heroCb.getSelectedItem().toString()).getCv();
+                    
+                    List<String> rows = new ArrayList<String>();
+                    Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
+                    List<String> columns = new ArrayList<String>();
+                    Collections.addAll(columns, "patk", "pdef", "php", "pcrit", "pcritdmg", "speed", "eff", "effres", "fatk",
+                            "fdef", "fhp", "set", "pk");
+                    Equipment e;
+                    String values;
+                    for (int i = 0; i < rows.size(); i++) {
+                        for (int j = 0; j < columns.size(); j++) {
+                            values = "";
+                            e = null;
+        
+                            if (i == 0) {
+                                e = s.getWeapon();
+                            } else if (i == 1) {
+                                e = s.getHead();
+                            } else if (i == 2) {
+                                e = s.getChest();
+                            } else if (i == 3) {
+                                e = s.getNeck();
+                            } else if (i == 4) {
+                                e = s.getRing();
+                            } else if (i == 5) {
+                                e = s.getBoot();
+                            }
+        
+                            if (j == 0) {
+                                values = Integer.toString(e.getP_atk());
+                            } else if (j == 1) {
+                                values = Integer.toString(e.getP_def());
+                            } else if (j == 2) {
+                                values = Integer.toString(e.getP_hp());
+                            } else if (j == 3) {
+                                values = Integer.toString(e.getC());
+                            } else if (j == 4) {
+                                values = Integer.toString(e.getCd());
+                            } else if (j == 5) {
+                                values = Integer.toString(e.getSpd());
+                            } else if (j == 6) {
+                                values = Integer.toString(e.getEff());
+                            } else if (j == 7) {
+                                values = Integer.toString(e.getEffres());
+                            } else if (j == 8) {
+                                //values = e.getSet();
+                                values = Integer.toString(e.getF_atk());
+                            } else if (j == 9) {
+                                values = Integer.toString(e.getF_def());
+                                //values = Integer.toString(e.getPk());
+                            }
+                            else if (j==10){
+                                values = Integer.toString(e.getF_hp());
+                            }
+                            else if (j==11){
+                                values = e.getSet();
+                            }
+                            else if (j==12){
+                                values = Integer.toString(e.getPk());
+                            }
+                            items.get(rows.get(i) + columns.get(j)).setText(values);
+                        }
+                    }
+                    sumCols();
+                    revalidate();
+                    calcHero(bName);
                     //cvTxt.setText(String.valueOf(s.getCV()));
                     threadCnt++;
                 }
@@ -1051,7 +1363,7 @@ public class gui extends JPanel implements ActionListener {
                     }
                     sumCols();
                     revalidate();
-                    calcHero();
+                    calcHero(bName);
                     threadCnt++;
     //thread            }
     //thread        };
@@ -1233,6 +1545,27 @@ public class gui extends JPanel implements ActionListener {
         c.gridx = 1;
         c.gridy = 6 + 3;
         add(bellaButton, c);
+
+        brusierButton = new JButton("Brusier Dmg");
+        brusierButton.setActionCommand("Brusier Dmg");
+        brusierButton.addActionListener(this);
+        c.gridx = 1;
+        c.gridy = 6 + 4;
+        add(brusierButton, c);
+
+        bellav2Button = new JButton("Bella Dmg");
+        bellav2Button.setActionCommand("Bella Dmg");
+        bellav2Button.addActionListener(this);
+        c.gridx = 1;
+        c.gridy = 6 + 5;
+        add(bellav2Button, c);
+
+        lifeButton = new JButton("Lifesteal");
+        lifeButton.setActionCommand("Lifesteal");
+        lifeButton.addActionListener(this);
+        c.gridx = 0;
+        c.gridy = 6 + 4;
+        add(lifeButton, c);
 
         hpButton = new JButton("Hp Calcs");
         hpButton.setActionCommand("Hp Calcs");
@@ -1615,8 +1948,6 @@ public class gui extends JPanel implements ActionListener {
         c.gridx = 3;
         c.gridy = 6 + 9;
         add(heroEffResTxt, c);
-
-        
         
         batchTxt = new JTextArea("",8,20);
         batchTxt.setLineWrap(true);
@@ -1676,16 +2007,16 @@ public class gui extends JPanel implements ActionListener {
         // Schedule a job for the event dispatch thread:
         // creating and showing this application's GUI.
         
-//thread        Thread thread = new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable() {
             // Thread thread = new Thread(){
             
-//thread            public void run() {
+            public void run() {
                 gui g = new gui();
                 g.createAndShowGUI();
                 System.out.println("Thread Running");
-//thread            }
-//thread        });
-//thread        thread.start();
+            }
+        });
+        thread.start();
     }
 
     // javax.swing.SwingUtilities.invokeLater(new Runnable() {
