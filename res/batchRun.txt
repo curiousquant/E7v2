@@ -6,10 +6,14 @@ Sigret,Wyvern 13
 Angelica,Hp Calcs
 C.Zerato,Lifesteal
 Violet,Lifesteal
-C.Dominel,Max Dmg
+Melissa,Max Dmg
 Celine,Max Dmg
 C.Armin,Run Speed Calcs
 BBK,Max Dmg
-Melissa,Max Dmg
+C.Dominel,Max Dmg
+A.Ras,Hp Calcs
+Tama,Hp Calcs
 Roana,Hp Calcs
+Luna,Max Dmg
+Furious,Wyvern 13
 Roana,Export XLSX

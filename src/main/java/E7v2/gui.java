@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -62,10 +63,30 @@ public class gui extends JPanel implements ActionListener {
     Thread threadcustom,threadbella,threadspd,threadatk,threadhp,threadwyvern;
     int threadCnt=1;
     Map<Integer,FinalHero> fhero;
-    boolean running;
+    boolean running,runningFromMulti;
+    public gui(MultiDim m) {
+        super(new GridBagLayout());
+        runningFromMulti=true;
+        border = new Rectangle(RECT_X, RECT_Y, RECT_WIDTH, RECT_HEIGHT);
+        running = false;
+        cnt = 0;
+        cnt2 = 0;
+        fhero = new HashMap<>();
+        history = new HashMap<>();
+        sumItems = new HashMap<>();
+        h = new Handler(this, new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\bag.txt",
+                "C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\herobag.txt", h),m);
+        b = new Bag("C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\bag.txt",
+                "C:\\Users\\jonmu\\Documents\\GitHub\\E7v3\\E7v2\\res\\herobag.txt", h);
+        
+        addLabels();
+        addHeros();
+        addTextStuff();
+        addButtons();
+    }
     public gui() {
         super(new GridBagLayout());
-
+        runningFromMulti=false;
         border = new Rectangle(RECT_X, RECT_Y, RECT_WIDTH, RECT_HEIGHT);
         running = false;
         cnt = 0;
@@ -418,7 +439,167 @@ public class gui extends JPanel implements ActionListener {
         drawProgress(400);
         running=false;
     }
+    public void calcHerov2(String bName) {
+        List<String> columns = new ArrayList<String>();
+        Collections.addAll(columns, "patk", "pdef", "php", "speed", "pcrit", "pcritdmg", "eff", "effres", "fatk","fdef","fhp", "set");
+        Hero selectedHero = b.getHeroBag().get(heroCb.getSelectedItem().toString());
+        List<String> rows = new ArrayList<String>();
+        Collections.addAll(rows, "weapon", "head", "chest", "neck", "ring", "boot");
 
+        int atkE1 = (items.get(rows.get(0)+columns.get(11)).getText().equals("atk")) ? 1 : 0;
+        int atkE2 = (items.get(rows.get(1)+columns.get(11)).getText().equals("atk")) ? 1 : 0;
+        int atkE3 = (items.get(rows.get(2)+columns.get(11)).getText().equals("atk")) ? 1 : 0;
+        int atkE4 = (items.get(rows.get(3)+columns.get(11)).getText().equals("atk")) ? 1 : 0;
+        int atkE5 = (items.get(rows.get(4)+columns.get(11)).getText().equals("atk")) ? 1 : 0;
+        int atkE6 = (items.get(rows.get(5)+columns.get(11)).getText().equals("atk")) ? 1 : 0;
+
+        int critE1 = (items.get(rows.get(0)+columns.get(11)).getText().equals("crit")) ? 1 : 0;
+        int critE2 = (items.get(rows.get(1)+columns.get(11)).getText().equals("crit")) ? 1 : 0;
+        int critE3 = (items.get(rows.get(2)+columns.get(11)).getText().equals("crit")) ? 1 : 0;
+        int critE4 = (items.get(rows.get(3)+columns.get(11)).getText().equals("crit")) ? 1 : 0;
+        int critE5 = (items.get(rows.get(4)+columns.get(11)).getText().equals("crit")) ? 1 : 0;
+        int critE6 = (items.get(rows.get(5)+columns.get(11)).getText().equals("crit")) ? 1 : 0;
+
+        int desE1 = (items.get(rows.get(0)+columns.get(11)).getText().equals("des")) ? 1 : 0;
+        int desE2 = (items.get(rows.get(1)+columns.get(11)).getText().equals("des")) ? 1 : 0;
+        int desE3 = (items.get(rows.get(2)+columns.get(11)).getText().equals("des")) ? 1 : 0;
+        int desE4 = (items.get(rows.get(3)+columns.get(11)).getText().equals("des")) ? 1 : 0;
+        int desE5 = (items.get(rows.get(4)+columns.get(11)).getText().equals("des")) ? 1 : 0;
+        int desE6 = (items.get(rows.get(5)+columns.get(11)).getText().equals("des")) ? 1 : 0;
+
+        int effE1 = (items.get(rows.get(0)+columns.get(11)).getText().equals("eff")) ? 1 : 0;
+        int effE2 = (items.get(rows.get(1)+columns.get(11)).getText().equals("eff")) ? 1 : 0;
+        int effE3 = (items.get(rows.get(2)+columns.get(11)).getText().equals("eff")) ? 1 : 0;
+        int effE4 = (items.get(rows.get(3)+columns.get(11)).getText().equals("eff")) ? 1 : 0;
+        int effE5 = (items.get(rows.get(4)+columns.get(11)).getText().equals("eff")) ? 1 : 0;
+        int effE6 = (items.get(rows.get(5)+columns.get(11)).getText().equals("eff")) ? 1 : 0;
+
+        int hpE1 = (items.get(rows.get(0)+columns.get(11)).getText().equals("hp")) ? 1 : 0;
+        int hpE2 = (items.get(rows.get(1)+columns.get(11)).getText().equals("hp")) ? 1 : 0;
+        int hpE3 = (items.get(rows.get(2)+columns.get(11)).getText().equals("hp")) ? 1 : 0;
+        int hpE4 = (items.get(rows.get(3)+columns.get(11)).getText().equals("hp")) ? 1 : 0;
+        int hpE5 = (items.get(rows.get(4)+columns.get(11)).getText().equals("hp")) ? 1 : 0;
+        int hpE6 = (items.get(rows.get(5)+columns.get(11)).getText().equals("hp")) ? 1 : 0;
+
+        int defE1 = (items.get(rows.get(0)+columns.get(11)).getText().equals("def")) ? 1 : 0;
+        int defE2 = (items.get(rows.get(1)+columns.get(11)).getText().equals("def")) ? 1 : 0;
+        int defE3 = (items.get(rows.get(2)+columns.get(11)).getText().equals("def")) ? 1 : 0;
+        int defE4 = (items.get(rows.get(3)+columns.get(11)).getText().equals("def")) ? 1 : 0;
+        int defE5 = (items.get(rows.get(4)+columns.get(11)).getText().equals("def")) ? 1 : 0;
+        int defE6 = (items.get(rows.get(5)+columns.get(11)).getText().equals("def")) ? 1 : 0;
+
+        int spdE1 = (items.get(rows.get(0)+columns.get(11)).getText().equals("spd")) ? 1 : 0;
+        int spdE2 = (items.get(rows.get(1)+columns.get(11)).getText().equals("spd")) ? 1 : 0;
+        int spdE3 = (items.get(rows.get(2)+columns.get(11)).getText().equals("spd")) ? 1 : 0;
+        int spdE4 = (items.get(rows.get(3)+columns.get(11)).getText().equals("spd")) ? 1 : 0;
+        int spdE5 = (items.get(rows.get(4)+columns.get(11)).getText().equals("spd")) ? 1 : 0;
+        int spdE6 = (items.get(rows.get(5)+columns.get(11)).getText().equals("spd")) ? 1 : 0;
+        
+    //atk set
+        if (atkE1 + atkE2 + atkE3 + atkE4 + atkE5 + atkE6 >= 4) {
+            heroAtkTxt.setText(String.valueOf(Math.floor(Double.parseDouble(sumItems.get(columns.get(8)).getText())+
+            selectedHero.getAtk() * (1 + (Double.parseDouble(sumItems.get(columns.get(0)).getText())+35) / 100))));
+        }
+        else{
+            heroAtkTxt.setText(String.valueOf(Math.floor((Double.parseDouble(sumItems.get(columns.get(8)).getText())+
+            selectedHero.getAtk() * (1 + Double.parseDouble(sumItems.get(columns.get(0)).getText()) / 100)))));
+        }
+    //def set
+        if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 == 6) {
+            heroDefTxt.setText(String.valueOf(Math.floor(Double.parseDouble(sumItems.get(columns.get(9)).getText())+
+            selectedHero.getDef() * (1 + (Double.parseDouble(sumItems.get(columns.get(1)).getText())+45) / 100))));
+        }
+        else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 >= 4) {
+            heroDefTxt.setText(String.valueOf(Math.floor(Double.parseDouble(sumItems.get(columns.get(9)).getText())+
+            selectedHero.getDef() * (1 + (Double.parseDouble(sumItems.get(columns.get(1)).getText())+30) / 100))));
+        }
+        else if (defE1 + defE2 + defE3 + defE4 + defE5 + defE6 >= 2) {
+            heroDefTxt.setText(String.valueOf(Math.floor(Double.parseDouble(sumItems.get(columns.get(9)).getText())+
+            selectedHero.getDef() * (1 + (Double.parseDouble(sumItems.get(columns.get(1)).getText())+15) / 100))));
+        }
+        else{
+            heroDefTxt.setText(String.valueOf(Math.floor(Double.parseDouble(sumItems.get(columns.get(9)).getText())+
+            selectedHero.getDef() * (1 + (Double.parseDouble(sumItems.get(columns.get(1)).getText())) / 100))));
+        }
+    //hp set
+        if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 == 6) {
+            heroHpTxt.setText(String.valueOf(Math.floor( + Double.parseDouble(sumItems.get(columns.get(10)).getText())+
+            selectedHero.getHp() * (1 + (Double.parseDouble(sumItems.get(columns.get(2)).getText())+45) / 100))));
+        }
+        else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 >= 4) {
+            heroHpTxt.setText(String.valueOf(Math.floor( + Double.parseDouble(sumItems.get(columns.get(10)).getText())+
+            selectedHero.getHp() * (1 + (Double.parseDouble(sumItems.get(columns.get(2)).getText())+30) / 100))));
+        }
+        else if (hpE1 + hpE2 + hpE3 + hpE4 + hpE5 + hpE6 >= 2) {
+            heroHpTxt.setText(String.valueOf(Math.floor( + Double.parseDouble(sumItems.get(columns.get(10)).getText())+
+            selectedHero.getHp() * (1 + (Double.parseDouble(sumItems.get(columns.get(2)).getText())+15) / 100))));
+        }
+        else{
+            heroHpTxt.setText(String.valueOf(Math.floor( + Double.parseDouble(sumItems.get(columns.get(10)).getText())+
+                selectedHero.getHp() * (1 + (Double.parseDouble(sumItems.get(columns.get(2)).getText())) / 100))));
+        }
+
+    //speed
+        if (spdE1 + spdE2 + spdE3 + spdE4 + spdE5 + spdE6 >= 4) {
+            heroSpdTxt.setText(String.valueOf(
+                Math.floor((1.25*selectedHero.getSpd() + (Double.parseDouble(sumItems.get(columns.get(3)).getText()))))));
+        }
+        else{
+            heroSpdTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getSpd() + (Double.parseDouble(sumItems.get(columns.get(3)).getText())))));
+        }
+
+    //crit
+        if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 == 6) {
+            heroCritTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getCrit() + (Double.parseDouble(sumItems.get(columns.get(4)).getText())+36))));
+        }
+        else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 >= 4) {
+            heroCritTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getCrit() + (Double.parseDouble(sumItems.get(columns.get(4)).getText())+24))));
+        }
+        else if (critE1 + critE2 + critE3 + critE4 + critE5 + critE6 >= 2) {
+            heroCritTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getCrit() + (Double.parseDouble(sumItems.get(columns.get(4)).getText())+12))));
+        }
+        else{
+            heroCritTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getCrit() + (Double.parseDouble(sumItems.get(columns.get(4)).getText())))));
+        }
+    //crit dmg
+        if (desE1 + desE2 + desE3 + desE4 + desE5 + desE6 >= 4) {
+            heroCdTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getCritdmg() + (Double.parseDouble(sumItems.get(columns.get(5)).getText())+35))));
+        }
+        else{
+            heroCdTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getCritdmg() + (Double.parseDouble(sumItems.get(columns.get(5)).getText())))));
+        }
+    //eff
+        if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 == 6) {
+            heroEffTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getEff() + (Double.parseDouble(sumItems.get(columns.get(6)).getText())+60))));
+        }
+        else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 >= 4) {
+            heroEffTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getEff() + (Double.parseDouble(sumItems.get(columns.get(6)).getText())+40))));
+        }
+        else if (effE1 + effE2 + effE3 + effE4 + effE5 + effE6 >= 2) {
+            heroEffTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getEff() + (Double.parseDouble(sumItems.get(columns.get(6)).getText())+20))));
+        }
+        else{
+            heroEffTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getEff() + (Double.parseDouble(sumItems.get(columns.get(6)).getText())))));
+        }
+
+        heroEffResTxt.setText(String.valueOf(
+                Math.floor(selectedHero.getEffres() + (Double.parseDouble(sumItems.get(columns.get(7)).getText())))));
+        //System.out.println(selectedHero.getEff());
+        
+        
+        running=false;
+    }
     public void saveStuff() {
         // customAtkTxt, customHpTxt, customCritTxt,customSpeedTxt, customDefTxt
         try {
@@ -1464,6 +1645,23 @@ public class gui extends JPanel implements ActionListener {
                 e.printStackTrace();
             }
         }   
+        else if ("Dropdown".equals(evt.getActionCommand())&&runningFromMulti) {
+            h.getM().enqueue((new Callable() {
+        		public Object call() throws Exception {
+        			h.getM().doStuff();
+        			return null;
+        		}
+        	}));
+        	
+        	if(getCnt2()>0){
+                //getFhero().remove(getCnt2());
+                //cnt2--;
+            	
+                calcHeroUI();
+                
+            }
+
+        }
         else if ("Dropdown".equals(evt.getActionCommand())) {
             if(getCnt2()>0){
                 //getFhero().remove(getCnt2());
